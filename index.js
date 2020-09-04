@@ -19,6 +19,8 @@ app.use(
     })
 );
 
+app.use(express.urlencoded({ extended: false }));
+
 app.use(express.static('./public'));
 
 
@@ -37,15 +39,11 @@ app.get('/petition', (req, res) => {
 
 app.post('/petition', (req, res) => {
 
-    let body = '';
-    let parsedBody;
+    const { first, last, signature } = req.body;
 
-    req.on('data', chunk => body += chunk);
-    req.on('end', () => {
-        // creat an obj with input. props: first, last, signature
-        parsedBody = querystring.parse(body);
-        // console.log(parsedBody);
-    });
+    console.log('FIRST NAME: ', first);
+    console.log('LAST NAME: ', last);
+    console.log('SIGNATURE: ', signature);
 
 });
 
