@@ -38,11 +38,13 @@ app.get('/petition', (req, res) => {
 app.post('/petition', (req, res) => {
 
     let body = '';
+    let parsedBody;
 
     req.on('data', chunk => body += chunk);
     req.on('end', () => {
-        let parsedBody = querystring.parse(body);
-        console.log(parsedBody);
+        // creat an obj with input. props: first, last, signature
+        parsedBody = querystring.parse(body);
+        // console.log(parsedBody);
     });
 
 });

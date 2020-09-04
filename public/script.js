@@ -6,7 +6,6 @@
     const ctx = canv[0].getContext('2d');
 
     /////////// TEMPORARY 'SIGNATURE' //////////
-
     canv.on('mousedown', () => {
 
         ctx.strokeStyle = 'magenta';
@@ -20,9 +19,11 @@
     });
     
 
+    //////////// SUBMIT EVENT ////////////
     form.on('submit', () => {
-        console.log('THE FORM WAS SUBMITTED');
+        // assign the camvas URL as a value to the input field
         hiddenSig.val(canv[0].toDataURL());
+        // console.log(hiddenSig.val());
     });
 
 })();
