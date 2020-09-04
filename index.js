@@ -2,18 +2,31 @@ const express = require('express');
 const app = express();
 const handlebars = require('express-handlebars');
 const db = require('./db');
+const cookieSession = require('cookie-session');
+const querystring = require('querystring');
+
 
 ////////// HANDLEBARS SETTINGS /////////
 app.engine('handlebars', handlebars());
 app.set('view engine', 'handlebars');
 
+
 ////////// MIDDLEWARE ////////////
+app.use(
+    cookieSession({
+        secret: `I'm always angry.`,
+        maxAge: 1000 * 60 * 60 * 24 * 14,
+    })
+);
+
 app.use(express.static('./public'));
 
 
+///////////// REQUIESTS ////////////
 app.get('/', (req, res) => {
     res.redirect('/petition');
 });
+
 
 app.get('/petition', (req, res) => {
     res.render('petition', {
@@ -22,7 +35,17 @@ app.get('/petition', (req, res) => {
 });
 
 
+app.post('/petition', (req, res) => {
 
+    let body = '';
+
+    req.on('data', chunk => body += chunk);
+    req.on('end', () => {
+        let parsedBody = querystring.parse(body);
+        console.log(parsedBody);
+    });
+
+});
 
 
 
