@@ -6,7 +6,14 @@ module.exports.addSignature = (first, last, sig) => {
     return db.query(
         `INSERT INTO signatures (first, last, sig)
         VALUES ($1, $2, $3)
-        `,
+        RETURNING id`,
         [first, last, sig]
+    );
+};
+
+module.exports.getSigUrl = (id) => {
+    return db.query(
+        `SELECT * FROM signatures WHERE id = $1`,
+        [id]
     );
 };

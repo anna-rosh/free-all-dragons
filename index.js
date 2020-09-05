@@ -25,13 +25,17 @@ app.use(express.static('./public'));
 
 ///////////// REQUIESTS ////////////
 app.get('/', (req, res) => {
-    res.redirect('/petition');
+    
+    if (req.session.id) {
+        res.redirect("/thanks");
+    } else {
+        res.redirect('/petition');
+    }
+       
 });
 
 
 app.get('/petition', (req, res) => {
-
-    // write here a redirect to the thanks page if the user has cookies
 
     res.render('petition', {
         layout: 'main',
@@ -43,30 +47,60 @@ app.post('/petition', (req, res) => {
     // get the user data from the request
     const { first, last, signature } = req.body;
     // use this data to create a new row in the database
-    db.addSignature(first, last, signature).then(() => {
+    db.addSignature(first, last, signature)
+        .then(({ rows }) => {
+        // get the id of the row from the result obj
+        // rows is one of the props of the output of addSignature containig the id
+            const { id } = rows[0]; 
+            // create a new id prop to store in cookies to have access to it 
+            // for subsequent requiests
+            req.session.id = id;
+        
+            res.redirect('/thanks');
 
-        // req.session.id = id;
-        // console.log('here is the id: ', id);
+        })
+        .catch((err) => {
 
-        res.render('thanks', {
-            layout: 'main'
-        });
+            console.log('ERR in addSignature: ', err);
 
-    }).catch((err) => {
-
-        console.log('ERR in addSignature: ', err);
-
-        res.render('petition', {
-            layout: 'main',
-            helpers: {
-                addVisibility() {
-                    return 'visible';
+            res.render('petition', {
+                layout: 'main',
+                helpers: {
+                    addVisibility() {
+                        return 'visible';
+                    }
                 }
-            }
-        });
-    }); // closes catch
+            });
+        }); // closes catch
 
 }); // closes post request
+
+app.get('/thanks', (req, res) => {
+
+    let currId = req.session.id;
+
+    db.getSigUrl(currId)
+        .then(({ rows }) => {
+
+            const { sig } = rows[0];
+            
+            res.render("thanks", {
+                layout: "main",
+                helpers: {
+                    sigUrl() {
+                        return sig;
+                    }
+                }
+            });
+        })
+        .catch((err) => {
+            console.log('err in getSigUrl: ', err);
+        });
+        
+    // req.session = null;
+
+});
+
 
 
 
