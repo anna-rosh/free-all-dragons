@@ -31,9 +31,10 @@
     .on('mouseup', (e) => {
         // stop drawing
         $(e.currentTarget).off('mousemove');
-        
+
+        // assign the canvas url to the hidden input field
+        // in order to be able to submit the signature
         let signature = canv[0].toDataURL();
-        console.log(signature);
         hiddenSig.val(signature);
     });
 

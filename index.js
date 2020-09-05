@@ -3,7 +3,6 @@ const app = express();
 const handlebars = require('express-handlebars');
 const db = require('./db');
 const cookieSession = require('cookie-session');
-const querystring = require('querystring');
 
 
 ////////// HANDLEBARS SETTINGS /////////
@@ -31,6 +30,9 @@ app.get('/', (req, res) => {
 
 
 app.get('/petition', (req, res) => {
+
+    // write here a redirect to the thanks page if the user has cookies
+
     res.render('petition', {
         layout: 'main',
     });
@@ -38,14 +40,33 @@ app.get('/petition', (req, res) => {
 
 
 app.post('/petition', (req, res) => {
-
+    // get the user data from the request
     const { first, last, signature } = req.body;
+    // use this data to create a new row in the database
+    db.addSignature(first, last, signature).then(() => {
 
-    console.log('FIRST NAME: ', first);
-    console.log('LAST NAME: ', last);
-    console.log('SIGNATURE: ', signature);
+        // req.session.id = id;
+        // console.log('here is the id: ', id);
 
-});
+        res.render('thanks', {
+            layout: 'main'
+        });
+
+    }).catch((err) => {
+
+        console.log('ERR in addSignature: ', err);
+
+        res.render('petition', {
+            layout: 'main',
+            helpers: {
+                addVisibility() {
+                    return 'visible';
+                }
+            }
+        });
+    }); // closes catch
+
+}); // closes post request
 
 
 
