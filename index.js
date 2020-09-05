@@ -25,21 +25,20 @@ app.use(express.static('./public'));
 
 ///////////// REQUIESTS ////////////
 app.get('/', (req, res) => {
-    
-    if (req.session.id) {
-        res.redirect("/thanks");
-    } else {
-        res.redirect('/petition');
-    }
-       
+    res.redirect('/petition');
 });
 
 
 app.get('/petition', (req, res) => {
 
-    res.render('petition', {
-        layout: 'main',
-    });
+    if (req.session.id) {
+        res.redirect("/thanks");
+    } else {
+        res.render('petition', {
+            layout: 'main',
+        }); 
+    }
+
 });
 
 
@@ -73,7 +72,7 @@ app.post('/petition', (req, res) => {
             });
         }); // closes catch
 
-}); // closes post request
+}); // closes post request on /petition
 
 app.get('/thanks', (req, res) => {
 
@@ -96,10 +95,8 @@ app.get('/thanks', (req, res) => {
         .catch((err) => {
             console.log('err in getSigUrl: ', err);
         });
-        
-    // req.session = null;
 
-});
+}); // closes get request on /thanks
 
 
 
