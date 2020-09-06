@@ -48,8 +48,7 @@ app.post('/petition', (req, res) => {
     // use this data to create a new row in the database
     db.addSignature(first, last, signature)
         .then(({ rows }) => {
-        // get the id of the row from the result obj
-        // rows is one of the props of the output of addSignature containig the id
+            
             const { id } = rows[0]; 
             // create a new id prop to store in cookies to have access to it 
             // for subsequent requiests
@@ -84,26 +83,14 @@ app.get('/thanks', (req, res) => {
         let currId = req.session.id;
 
         db.countRows()
-            .then(({ rows }) => {
-                // get the number of rows
-                const { count } = rows[0];
+            .then(({ rows:allRows }) => {
 
-                db.getSigUrl(currId).then(({ rows }) => {
-                    // get the signature link from the current row obj
-                    const { sig } = rows[0];
+                db.getCurrRow(currId).then(({ rows:currRow }) => {
 
                     res.render('thanks', {
                         layout: 'main',
-                        helpers: {
-                            getNumberOfSigners() {
-                                // insert the num of rows into the thanks template
-                                return count;
-                            },
-                            sigUrl() {
-                                // insert the signature url into the href of img in the thanks template
-                                return sig;
-                            }
-                        }
+                        currRow,
+                        allRows
                     });
 
                 }).catch(err => console.log('error in getSigUrl: ', err)); // catch for getSigUrl
@@ -116,19 +103,25 @@ app.get('/thanks', (req, res) => {
 
 }); // closes get request on /thanks
 
-// app.get('/signers', (req, res) => {
 
-//     if (!req.session.id) {
-//         res.redirect('/petition');
-//     } else {
-//         db.countRows().then()
-//     }
+app.get('/signers', (req, res) => {
 
-//     res.render('signers', {
-//         layout: 'main'
-//     });
+    if (!req.session.id) {
+        res.redirect('/petition');
+    } else {
 
-// });
+        db.getNames()
+            .then(({ rows }) => {
+                res.render('signers', {
+                    layout: 'main',
+                    rows
+                });
+            })
+            .catch((err) => console.log('err in getNames: ', err));
+        
+    } // closes else statement
+
+}); // closes get request on /signers
 
 
 

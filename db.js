@@ -11,15 +11,22 @@ module.exports.addSignature = (first, last, sig) => {
     );
 };
 
-module.exports.getSigUrl = (id) => {
+module.exports.countRows = () => {
+    return db.query(
+        `SELECT COUNT(*) FROM signatures`
+    );
+};
+
+// returns only one row in .rows
+module.exports.getCurrRow = (id) => {
     return db.query(
         `SELECT * FROM signatures WHERE id = $1`,
         [id]
     );
 };
 
-module.exports.countRows = () => {
+module.exports.getNames = () => {
     return db.query(
-        `SELECT COUNT(*) FROM signatures`
+        `SELECT first, last FROM signatures`
     );
 };
