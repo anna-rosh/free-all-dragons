@@ -74,30 +74,61 @@ app.post('/petition', (req, res) => {
 
 }); // closes post request on /petition
 
+
 app.get('/thanks', (req, res) => {
 
-    let currId = req.session.id;
+    if (!req.session.id) {
+        res.redirect('/petition');
+    } else {
+        // find the current id in cookies
+        let currId = req.session.id;
 
-    db.getSigUrl(currId)
-        .then(({ rows }) => {
+        db.countRows()
+            .then(({ rows }) => {
+                // get the number of rows
+                const { count } = rows[0];
 
-            const { sig } = rows[0];
-            
-            res.render("thanks", {
-                layout: "main",
-                helpers: {
-                    sigUrl() {
-                        return sig;
-                    }
-                }
-            });
-        })
-        .catch((err) => {
-            console.log('err in getSigUrl: ', err);
-        });
+                db.getSigUrl(currId).then(({ rows }) => {
+                    // get the signature link from the current row obj
+                    const { sig } = rows[0];
+
+                    res.render('thanks', {
+                        layout: 'main',
+                        helpers: {
+                            getNumberOfSigners() {
+                                // insert the num of rows into the thanks template
+                                return count;
+                            },
+                            sigUrl() {
+                                // insert the signature url into the href of img in the thanks template
+                                return sig;
+                            }
+                        }
+                    });
+
+                }).catch(err => console.log('error in getSigUrl: ', err)); // catch for getSigUrl
+
+            })
+            .catch((err) => {
+                console.log('err in getSigUrl: ', err);
+            }); // catch for countRows
+    } // closes else statement
 
 }); // closes get request on /thanks
 
+// app.get('/signers', (req, res) => {
+
+//     if (!req.session.id) {
+//         res.redirect('/petition');
+//     } else {
+//         db.countRows().then()
+//     }
+
+//     res.render('signers', {
+//         layout: 'main'
+//     });
+
+// });
 
 
 

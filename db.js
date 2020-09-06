@@ -17,3 +17,9 @@ module.exports.getSigUrl = (id) => {
         [id]
     );
 };
+
+module.exports.countRows = () => {
+    return db.query(
+        `SELECT COUNT(*) FROM signatures`
+    );
+};
