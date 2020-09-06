@@ -3,6 +3,7 @@ const app = express();
 const handlebars = require('express-handlebars');
 const db = require('./db');
 const cookieSession = require('cookie-session');
+const csurf = require('csurf'); // get csurf middleware to prevent csrf
 
 
 ////////// HANDLEBARS SETTINGS /////////
@@ -19,6 +20,16 @@ app.use(
 );
 
 app.use(express.urlencoded({ extended: false }));
+
+app.use(csurf());
+
+app.use(function (req, res, next) {
+    // provide my templates with csrfToken
+    res.locals.csrfToken = req.csrfToken();
+    // prevent clickjacking
+    res.setHeader("x-frame-options", "deny");
+    next();
+});
 
 app.use(express.static('./public'));
 
@@ -48,7 +59,7 @@ app.post('/petition', (req, res) => {
     // use this data to create a new row in the database
     db.addSignature(first, last, signature)
         .then(({ rows }) => {
-            
+
             const { id } = rows[0]; 
             // create a new id prop to store in cookies to have access to it 
             // for subsequent requiests
@@ -86,13 +97,11 @@ app.get('/thanks', (req, res) => {
             .then(({ rows:allRows }) => {
 
                 db.getCurrRow(currId).then(({ rows:currRow }) => {
-
                     res.render('thanks', {
                         layout: 'main',
                         currRow,
                         allRows
                     });
-
                 }).catch(err => console.log('error in getSigUrl: ', err)); // catch for getSigUrl
 
             })
