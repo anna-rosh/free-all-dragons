@@ -43,7 +43,7 @@
         // find out where on the page the canvas sits
         const { top: posTop, left: posLeft } = canv.offset();
 
-        ctx.strokeStyle = 'magenta';
+        ctx.strokeStyle = "rgb(87, 84, 84)";
         // find the current coordinates 
         x = e.clientX - posLeft;
         y = e.clientY - posTop;

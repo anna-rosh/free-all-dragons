@@ -133,44 +133,4 @@ app.get('/signers', (req, res) => {
 }); // closes get request on /signers
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// app.get('/', (req, res) => {
-//     console.log('get request to / route happened');
-// });
-
-
-// app.get('/actors', (req, res) => {
-//     db.getActors()
-//         .then(({ rows }) => {
-//             console.log('results: ', rows);
-//         })
-//         .catch((err) => {
-//             console.log('err in getActors: ', err);
-//         });
-// });
-
-// app.get('/add-actor', (req, res) => {
-//     db.addActor('Some Actor', 43, 20)
-//         .then(() => {
-//             console.log('that worked');
-//         })
-//         .catch((err) => console.log('err in assActor', err));
-// });
-
-
-
 app.listen(8080, () => console.log('my petition server is running 🚴‍♀️'));

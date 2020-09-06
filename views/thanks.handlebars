@@ -1,9 +1,12 @@
 <div class="thanks-container">
-    <h1>Here is my thanks page</h1>
     {{#currRow}}
-    <img src="{{sig}}">
+        <h1>Thank you {{first}}</h1>
+        <h2>for signing the petition</h2>
+        <div class="img-container">
+           <img src="{{sig}}"> 
+        </div>
     {{/currRow}}
     {{#allRows}}
-    <a href="/signers">See all {{count}} signers</a>
+        <a href="/signers">See all {{count}} signers</a>
     {{/allRows}}
 </div>
