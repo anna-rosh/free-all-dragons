@@ -149,15 +149,15 @@ app.get('/register', (req, res) => {
 app.post('/register', (req, res) => {
 
     let { first, last, email, password } = req.body;
-
+    // encode the password provided by user (from req.body)
     bc.hash(password)
         .then((hashedPassword) => {
-
+            // insert the hashed password into the database along with other user information
             db.addUser(first, last, email, hashedPassword)
                 .then(({ rows }) => {
 
                     const { id } = rows;
-
+                    // store user's id in a cookie to define her as registered/logged in
                     req.session.userId = id;
 
                     res.redirect('/petition');
@@ -194,7 +194,8 @@ app.get('/login', (req, res) => {
 app.post('/login', (req, res) => {
 
     const { email, password } = req.body;
-
+    // the function also checks validity of the email address 
+    // as it won't work with an address which is not present in the table
     db.checkPassword(email)
         .then(( {rows} ) => {
             
@@ -204,8 +205,9 @@ app.post('/login', (req, res) => {
                 .then((result) => {
 
                     if (result == true) {
+                        // place user's id in the cookie to define her as logged in
                         req.session.userId = id;
-
+                        // check if the user has signed the petition
                         if(req.session.sigId) {
                             res.redirect('/thanks');
                         } else {
@@ -238,6 +240,17 @@ app.post('/login', (req, res) => {
                 },
             });
         });
+
+});
+
+////////////////// LOGGED OUT REQUEST ///////////////
+app.get('/logout', (req, res) => {
+
+    req.session = null;
+
+    res.render('logout', {
+        layout: 'main'
+    });
 
 });
 
