@@ -2,8 +2,10 @@ const express = require('express');
 const app = express();
 const handlebars = require('express-handlebars');
 const db = require('./db');
+const bc = require('./bc');
 const cookieSession = require('cookie-session');
 const csurf = require('csurf'); // get csurf middleware to prevent csrf
+const { hash } = require('bcryptjs');
 
 
 ////////// HANDLEBARS SETTINGS /////////
@@ -34,15 +36,15 @@ app.use(function (req, res, next) {
 app.use(express.static('./public'));
 
 
-///////////// REQUIESTS ////////////
+///////////// ROOT ROUTE REQUESTS ////////////
 app.get('/', (req, res) => {
     res.redirect('/petition');
 });
 
-
+//////////// PETITION REQUESTS /////////
 app.get('/petition', (req, res) => {
 
-    if (req.session.id) {
+    if (req.session.sigId) {
         res.redirect("/thanks");
     } else {
         res.render('petition', {
@@ -63,7 +65,7 @@ app.post('/petition', (req, res) => {
             const { id } = rows[0]; 
             // create a new id prop to store in cookies to have access to it 
             // for subsequent requiests
-            req.session.id = id;
+            req.session.sigId = id;
         
             res.redirect('/thanks');
 
@@ -85,18 +87,19 @@ app.post('/petition', (req, res) => {
 }); // closes post request on /petition
 
 
+/////////////// THANKS REQUESTS ////////////////
 app.get('/thanks', (req, res) => {
 
-    if (!req.session.id) {
+    if (!req.session.sigId) {
         res.redirect('/petition');
     } else {
         // find the current id in cookies
-        let currId = req.session.id;
+        let currSigId = req.session.sigId;
 
         db.countRows()
             .then(({ rows:allRows }) => {
 
-                db.getCurrRow(currId).then(({ rows:currRow }) => {
+                db.getCurrRow(currSigId).then(({ rows:currRow }) => {
                     res.render('thanks', {
                         layout: 'main',
                         currRow,
@@ -112,10 +115,10 @@ app.get('/thanks', (req, res) => {
 
 }); // closes get request on /thanks
 
-
+////////////////// SIGNERS REQUESTS ////////////////
 app.get('/signers', (req, res) => {
 
-    if (!req.session.id) {
+    if (!req.session.sigId) {
         res.redirect('/petition');
     } else {
 
@@ -131,6 +134,112 @@ app.get('/signers', (req, res) => {
     } // closes else statement
 
 }); // closes get request on /signers
+
+////////////////// REGISTER REQUESTS //////////////////
+app.get('/register', (req, res) => {
+
+    res.render('register', {
+        layout: 'main'
+    });
+
+});
+
+
+
+app.post('/register', (req, res) => {
+
+    let { first, last, email, password } = req.body;
+
+    bc.hash(password)
+        .then((hashedPassword) => {
+
+            db.addUser(first, last, email, hashedPassword)
+                .then(({ rows }) => {
+
+                    const { id } = rows;
+
+                    req.session.userId = id;
+
+                    res.redirect('/petition');
+                    
+                })
+                .catch((err) => {
+                    console.log("ERR in addUser: ", err);
+
+                    res.render("register", {
+                        layout: "main",
+                        helpers: {
+                            addVisibility() {
+                                return "visible";
+                            },
+                        },
+                    });
+                });
+
+        })
+        .catch((err) => console.log('err in hash: ', err));
+
+});
+
+
+/////////////// LOGIN REQUESTS /////////////////
+app.get('/login', (req, res) => {
+
+    res.render("login", {
+        layout: "main",
+    });
+
+});
+
+app.post('/login', (req, res) => {
+
+    const { email, password } = req.body;
+
+    db.checkPassword(email)
+        .then(( {rows} ) => {
+            
+            const { password:encodedPassword, id } = rows[0];
+
+            bc.compare(password, encodedPassword)
+                .then((result) => {
+
+                    if (result == true) {
+                        req.session.userId = id;
+
+                        if(req.session.sigId) {
+                            res.redirect('/thanks');
+                        } else {
+                            res.redirect('/petition');
+                        }
+                    } else {
+                        res.render("login", {
+                            layout: "main",
+                            helpers: {
+                                addVisibility() {
+                                    return "visible";
+                                },
+                            },
+                        });
+                    }
+                
+                })
+                .catch(err => console.log('err in compare: ', err)); // closes catch on compare
+
+        })
+        .catch((err) => {
+            console.log('err in checkPassword: ', err);
+
+            res.render("login", {
+                layout: "main",
+                helpers: {
+                    addVisibility() {
+                        return "visible";
+                    },
+                },
+            });
+        });
+
+});
 
 
 app.listen(8080, () => console.log('my petition server is running 🚴‍♀️'));

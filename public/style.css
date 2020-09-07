@@ -40,7 +40,7 @@ form {
     align-items: center;
 }
 
-.name {
+input {
     width: 80%;
     margin-bottom: 20px;
     font-size: 20px;
@@ -52,13 +52,13 @@ form {
     transition: background-color 0.3s;
 }
 
-.name:focus {
+input:focus {
     outline: none;
     background-color: rgb(226, 220, 212);
     border-bottom: 1px solid #218b5a;
 }
 
-.name:hover {
+input:hover {
     background-color: rgb(226, 220, 212);
     border-bottom: 1px solid #218b5a;
 }
@@ -67,7 +67,7 @@ form {
     margin-bottom: 30px;
 }
 
-.petition-container .warning {
+.warning {
     color: rgb(108, 53, 124);
     margin-bottom: 10px;
     font-size: 16px;
@@ -76,9 +76,6 @@ form {
 }
 
 #canv {
-    display: block;
-    width: 400px;
-    height: 150px;
     background-color: rgb(226, 220, 212);
     margin-bottom: 15px;
 }
