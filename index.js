@@ -44,14 +44,9 @@ app.get('/', (req, res) => {
 ///////////////////////// PETITION REQUESTS //////////////////////////
 app.get('/petition', (req, res) => {
 
-    if (req.session.sigId) {
-        res.redirect("/thanks");
-    } else {
-        res.render('petition', {
-            layout: 'main',
-        }); 
-    }
-
+    res.render('petition', {
+        layout: 'main',
+    }); 
 });
 
 
@@ -65,9 +60,8 @@ app.post('/petition', (req, res) => {
         .then(({ rows }) => {
 
             const { id } = rows[0]; 
-            // create a new id prop to store in cookies to have access to it 
-            // for subsequent requiests
-            // req.session.sigId = id;
+
+            req.session.sigId = id;
         
             res.redirect('/thanks');
 
@@ -92,48 +86,40 @@ app.post('/petition', (req, res) => {
 /////////////// THANKS REQUESTS ////////////////
 app.get('/thanks', (req, res) => {
 
-    if (!req.session.sigId) {
-        res.redirect('/petition');
-    } else {
-        // find the current id in cookies
-        let currSigId = req.session.sigId;
+    // find the current id in cookies
+    let currSigId = req.session.sigId;
 
-        db.countRows()
-            .then(({ rows:allRows }) => {
+    db.countRows()
+        .then(({ rows:allRows }) => {
 
-                db.getCurrRow(currSigId).then(({ rows:currRow }) => {
-                    res.render('thanks', {
-                        layout: 'main',
-                        currRow,
-                        allRows
-                    });
-                }).catch(err => console.log('error in getSigUrl: ', err)); // catch for getSigUrl
+            db.getCurrRow(currSigId).then(({ rows:currRow }) => {
+                res.render('thanks', {
+                    layout: 'main',
+                    currRow,
+                    allRows
+                });
+            }).catch(err => console.log('error in getSigUrl: ', err)); // catch for getSigUrl
 
-            })
-            .catch((err) => {
-                console.log('err in getSigUrl: ', err);
-            }); // catch for countRows
-    } // closes else statement
+        })
+        .catch((err) => {
+            console.log('err in getSigUrl: ', err);
+        }); // catch for countRows
 
 }); // closes get request on /thanks
 
 ////////////////// SIGNERS REQUESTS ////////////////
 app.get('/signers', (req, res) => {
 
-    if (!req.session.sigId) {
-        res.redirect('/petition');
-    } else {
+    db.getSignersInfo()
+        .then(({ rows:signers }) => {
 
-        db.getNames()        // THIS FUNCTION NEEDS TO BE FIXED TO GET USER'S INFO FROM OTHER TABLES!!!!
-            .then(({ rows }) => {
-                res.render('signers', {
-                    layout: 'main',
-                    rows
-                });
-            })
-            .catch((err) => console.log('err in getNames: ', err));
-        
-    } // closes else statement
+            res.render("signers", {
+                layout: "main",
+                signers
+            });
+        })
+        .catch((err) => console.log("err in getSignersInfo: ", err));
+
 
 }); // closes get request on /signers
 

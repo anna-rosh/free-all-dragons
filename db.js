@@ -27,12 +27,6 @@ module.exports.getCurrRow = (id) => {
     );
 };
 
-module.exports.getNames = () => { // THIS FUNCTION NEEDS TO BE CHANGED TO GET USER'S INFORMATION FROM OTHER TABLES
-    return db.query(
-        `SELECT first, last FROM signatures`
-    );
-};
-
 
 ////////////// QUERIES FOR USERS TABLE ////////////
 module.exports.addUser = (first, last, email, password) => {
@@ -61,4 +55,18 @@ module.exports.addProfileInfo = (age, city, url, userId) => {
         `,
         [age || null, city || null, url || null, userId]
     );
+};
+
+
+///////////////// QUERIES FOR USERS, SIGNATURES, USER_PROFILES ///////////////
+module.exports.getSignersInfo = () => {
+    return db.query(
+        `SELECT * FROM signatures
+        LEFT JOIN users
+        ON signatures.user_id = users.id
+        LEFT JOIN user_profiles
+        ON signatures.user_id = user_profiles.user_id
+        `
+    );
+
 };

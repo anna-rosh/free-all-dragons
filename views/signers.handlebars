@@ -1,9 +1,17 @@
 {{>logout}}
 <div class="container signers-container">
-    <h1>Meet other proud signers!</h1>
-    {{#rows}}
-    <h3>{{first}} {{last}}</h3>
-    {{/rows}}    
+    <div class="signers">
+        <h1>Meet other proud signers!</h1>
+        {{#signers}}
+            {{#if url}}
+                <h3><a href="{{url}}">{{first}} {{last}}</a>{{#if age}}, {{age}}{{/if}}
+                {{#if city}}, {{city}}{{/if}}
+                </h3>
+            {{else}}
+                <h3>{{first}} {{last}}{{#if age}}, {{age}}{{/if}}
+                {{#if city}}, {{city}}{{/if}}
+                </h3>
+            {{/if}}
+        {{/signers}}   
+    </div>      
 </div>
-
-{{!-- THIS TEMPLATE NEEDS TO BE CHANGED TO GET SIGNERS INFORMATION FROM OTHER TABLES --}}
