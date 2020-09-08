@@ -1,13 +1,10 @@
 {{>logout}}
-<div class="petition-container">
+<div class="container petition-container">
     <h1>welcome to the petition page</h1>
     <h2>Sign the petition to make something very important happen</h2>
     <p class="instructions">Please fill in your first and last names as well as 
         your signature in the provided fields below</p>
-
     <form method="post">
-        <input class="name first" type="text" name="first" placeholder="first name">
-        <input class="name last" type="text" name="last" placeholder="last name">
         <p class="warning" style="visibility: {{addVisibility}}">Something went wrong. Please, try again</p>
         <canvas id="canv" width="400" height="150"></canvas>
         <input id="sig" type="hidden" name="signature">

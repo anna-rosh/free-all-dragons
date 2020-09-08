@@ -1,14 +1,15 @@
+/* eslint-disable no-irregular-whitespace */
 const spicedPg = require('spiced-pg');
 
 var db = spicedPg("postgres:postgres:postgres@localhost:5432/signatures");
 
 ////////////// QUERIES FOR SIGNATURES TABLE ////////////
-module.exports.addSignature = (first, last, sig) => {
+module.exports.addSignature = (sig, userId) => {
     return db.query(
-        `INSERT INTO signatures (first, last, sig)
-        VALUES ($1, $2, $3)
+        `INSERT INTO signatures (sig, user_id)
+        VALUES ($1, $2)
         RETURNING id`,
-        [first, last, sig]
+        [sig, userId]
     );
 };
 
@@ -26,7 +27,7 @@ module.exports.getCurrRow = (id) => {
     );
 };
 
-module.exports.getNames = () => {
+module.exports.getNames = () => { // THIS FUNCTION NEEDS TO BE CHANGED TO GET USER'S INFORMATION FROM OTHER TABLES
     return db.query(
         `SELECT first, last FROM signatures`
     );
@@ -47,5 +48,17 @@ module.exports.checkPassword = (email) => {
     return db.query(
         `SELECT * FROM users WHERE email = $1`,
         [email]
+    );
+};
+
+
+
+////////////// QUERIES FOR USER_PROFILES TABLE /////////////
+module.exports.addProfileInfo = (age, city, url, userId) => {
+    return db.query(
+        `INSERT INTO user_profiles (age, city, url, user_id)
+        VALUES ($1, $2, $3, $4)
+        `,
+        [age || null, city || null, url || null, userId]
     );
 };

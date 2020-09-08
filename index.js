@@ -36,12 +36,12 @@ app.use(function (req, res, next) {
 app.use(express.static('./public'));
 
 
-///////////// ROOT ROUTE REQUESTS ////////////
+////////////////////////// ROOT ROUTE REQUESTS ///////////////////////
 app.get('/', (req, res) => {
     res.redirect('/petition');
 });
 
-//////////// PETITION REQUESTS /////////
+///////////////////////// PETITION REQUESTS //////////////////////////
 app.get('/petition', (req, res) => {
 
     if (req.session.sigId) {
@@ -57,15 +57,17 @@ app.get('/petition', (req, res) => {
 
 app.post('/petition', (req, res) => {
     // get the user data from the request
-    const { first, last, signature } = req.body;
+    const { signature } = req.body;
+    // get the users.id from the cookie to store it in signatures table
+    const { userId } = req.session;
     // use this data to create a new row in the database
-    db.addSignature(first, last, signature)
+    db.addSignature(signature, userId)
         .then(({ rows }) => {
 
             const { id } = rows[0]; 
             // create a new id prop to store in cookies to have access to it 
             // for subsequent requiests
-            req.session.sigId = id;
+            // req.session.sigId = id;
         
             res.redirect('/thanks');
 
@@ -122,7 +124,7 @@ app.get('/signers', (req, res) => {
         res.redirect('/petition');
     } else {
 
-        db.getNames()
+        db.getNames()        // THIS FUNCTION NEEDS TO BE FIXED TO GET USER'S INFO FROM OTHER TABLES!!!!
             .then(({ rows }) => {
                 res.render('signers', {
                     layout: 'main',
@@ -156,11 +158,11 @@ app.post('/register', (req, res) => {
             db.addUser(first, last, email, hashedPassword)
                 .then(({ rows }) => {
 
-                    const { id } = rows;
+                    const { id } = rows[0];
                     // store user's id in a cookie to define her as registered/logged in
                     req.session.userId = id;
 
-                    res.redirect('/petition');
+                    res.redirect('/profile');
                     
                 })
                 .catch((err) => {
@@ -182,7 +184,7 @@ app.post('/register', (req, res) => {
 });
 
 
-/////////////// LOGIN REQUESTS /////////////////
+//////////////////////////// LOGIN REQUESTS ///////////////////////////
 app.get('/login', (req, res) => {
 
     res.render("login", {
@@ -251,6 +253,27 @@ app.get('/logout', (req, res) => {
     res.render('logout', {
         layout: 'main'
     });
+
+});
+
+
+/////////////////// PROFILE REQUEST ////////////////
+app.get('/profile', (req, res) => {
+
+    res.render('profile', {
+        layout: 'main',
+    });
+
+});
+
+app.post('/profile', (req, res) => {
+
+    const { age, city, url } =  req.body;
+    const { userId } = req.session;
+
+    db.addProfileInfo(age, city, url, userId)
+        .then(() => res.redirect('/petition'))
+        .catch(err => console.log('err in addProfileInfo: ', err));
 
 });
 
