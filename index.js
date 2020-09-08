@@ -123,6 +123,29 @@ app.get('/signers', (req, res) => {
 
 }); // closes get request on /signers
 
+///////////////////// SIGNERS CITY REQUESTS ///////////////
+app.get('/signers/:city', (req, res) => {
+
+    const params = req.params;
+    const { city } = params;
+    
+    db.getSignersFromCity(city)
+        .then(({ rows:rowsWithCity }) => {
+
+            res.render('city', {
+                layout: 'main',
+                rowsWithCity,
+                // make params accessible in the city template for puting
+                // city name into the title of the page
+                params
+            });
+
+        })
+        .catch(err => console.log('err in getSignersFromCity: ', err));
+
+});
+
+
 ////////////////// REGISTER REQUESTS //////////////////
 app.get('/register', (req, res) => {
 
@@ -131,8 +154,6 @@ app.get('/register', (req, res) => {
     });
 
 });
-
-
 
 app.post('/register', (req, res) => {
 
@@ -231,7 +252,7 @@ app.post('/login', (req, res) => {
 
 });
 
-////////////////// LOGGED OUT REQUEST ///////////////
+////////////////// LOGOUT REQUEST ///////////////
 app.get('/logout', (req, res) => {
 
     req.session = null;
@@ -254,12 +275,19 @@ app.get('/profile', (req, res) => {
 
 app.post('/profile', (req, res) => {
 
-    const { age, city, url } =  req.body;
+    let { age, city, url } =  req.body;
     const { userId } = req.session;
 
+    if (
+        (url != "" && !url.startsWith("http://")) ||
+        (url != "" && !url.startsWith("https://"))
+    ) {
+        url = `https://${url}`;
+    }
+        
     db.addProfileInfo(age, city, url, userId)
-        .then(() => res.redirect('/petition'))
-        .catch(err => console.log('err in addProfileInfo: ', err));
+        .then(() => res.redirect("/petition"))
+        .catch((err) => console.log("err in addProfileInfo: ", err));
 
 });
 

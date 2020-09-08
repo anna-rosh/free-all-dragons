@@ -4,12 +4,12 @@
         <h1>Meet other proud signers!</h1>
         {{#signers}}
             {{#if url}}
-                <h3><a href="{{url}}">{{first}} {{last}}</a>{{#if age}}, {{age}}{{/if}}
-                {{#if city}}, {{city}}{{/if}}
+                <h3><a href="{{url}}" target="_blank">{{first}} {{last}}</a>{{#if age}}, {{age}}{{/if}}
+                {{#if city}}, <a href="/signers/{{city}}">{{city}}</a>{{/if}}
                 </h3>
             {{else}}
                 <h3>{{first}} {{last}}{{#if age}}, {{age}}{{/if}}
-                {{#if city}}, {{city}}{{/if}}
+                {{#if city}}, <a href="/signers/{{city}}">{{city}}</a>{{/if}}
                 </h3>
             {{/if}}
         {{/signers}}   

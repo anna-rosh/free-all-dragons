@@ -70,3 +70,17 @@ module.exports.getSignersInfo = () => {
     );
 
 };
+
+module.exports.getSignersFromCity = (city) => {
+    return db.query(
+        `SELECT users.first, users.last
+        FROM signatures
+        LEFT JOIN users
+        ON signatures.user_id = users.id
+        LEFT JOIN user_profiles
+        ON signatures.user_id = user_profiles.user_id
+        WHERE LOWER(city) = LOWER($1)
+        `,
+        [city]
+    );
+};
