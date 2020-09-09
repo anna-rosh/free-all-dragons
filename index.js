@@ -44,9 +44,14 @@ app.get('/', (req, res) => {
 ///////////////////////// PETITION REQUESTS //////////////////////////
 app.get('/petition', (req, res) => {
 
-    res.render('petition', {
-        layout: 'main',
-    }); 
+    if (req.session.sigId) {
+        res.redirect('/thanks');
+    } else {
+        res.render('petition', {
+            layout: 'main',
+        });  
+    }
+    
 });
 
 
@@ -86,40 +91,49 @@ app.post('/petition', (req, res) => {
 /////////////// THANKS REQUESTS ////////////////
 app.get('/thanks', (req, res) => {
 
-    // find the current id in cookies
-    let currSigId = req.session.sigId;
+    if (!req.session.sigId) {
+        res.redirect('/petition');
+    } else {
+        // find the current signature id in the cookie
+        let currSigId = req.session.sigId;
 
-    db.countRows()
-        .then(({ rows:allRows }) => {
+        db.countRows()
+            .then(({ rows:allRows }) => {
 
-            db.getCurrRow(currSigId).then(({ rows:currRow }) => {
-                res.render('thanks', {
-                    layout: 'main',
-                    currRow,
-                    allRows
-                });
-            }).catch(err => console.log('error in getSigUrl: ', err)); // catch for getSigUrl
+                db.getCurrRow(currSigId).then(({ rows:currRow }) => {
+                    res.render('thanks', {
+                        layout: 'main',
+                        currRow,
+                        allRows
+                    });
+                }).catch(err => console.log('error in getSigUrl: ', err)); // catch for getSigUrl
 
-        })
-        .catch((err) => {
-            console.log('err in getSigUrl: ', err);
-        }); // catch for countRows
+            })
+            .catch((err) => {
+                console.log('err in getSigUrl: ', err);
+            }); // catch for countRows
+
+    } // closes else statement
 
 }); // closes get request on /thanks
 
 ////////////////// SIGNERS REQUESTS ////////////////
 app.get('/signers', (req, res) => {
 
-    db.getSignersInfo()
-        .then(({ rows:signers }) => {
+    if (!req.session.sigId) {
+        res.redirect('/petition');
+    } else {
+        db.getSignersInfo()
+            .then(({ rows:signers }) => {
 
-            res.render("signers", {
-                layout: "main",
-                signers
-            });
-        })
-        .catch((err) => console.log("err in getSignersInfo: ", err));
+                res.render("signers", {
+                    layout: "main",
+                    signers
+                });
+            })
+            .catch((err) => console.log("err in getSignersInfo: ", err)); 
 
+    } // closes else statement
 
 }); // closes get request on /signers
 
@@ -276,20 +290,34 @@ app.get('/profile', (req, res) => {
 app.post('/profile', (req, res) => {
 
     let { age, city, url } =  req.body;
-    const { userId } = req.session;
+    console.log('PROFILE POST INPUT: ', req.body);
 
-    if (
-        (url != "" && !url.startsWith("http://")) ||
-        (url != "" && !url.startsWith("https://"))
-    ) {
-        url = `https://${url}`;
-    }
+    const { userId } = req.session;
         
     db.addProfileInfo(age, city, url, userId)
         .then(() => res.redirect("/petition"))
         .catch((err) => console.log("err in addProfileInfo: ", err));
 
 });
+
+
+//////////////////////////// EDIT-PROFILE REQUESTS ///////////////////////
+app.get('/edit-profile', (req, res) => {
+
+    const { userId } = req.session;
+
+    db.getCurrUserInfo(userId)
+        .then(({ rows:userInfo }) => {
+            res.render('edit-profile', {
+                layout: 'main',
+                userInfo
+            });  
+        })
+        .catch(err => console.log('err in gerCurrUserInfo: ', err));
+
+});
+
+// app.get('/edit-profile')
 
 
 app.listen(8080, () => console.log('my petition server is running 🚴‍♀️'));

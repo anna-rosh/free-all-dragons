@@ -46,7 +46,6 @@ module.exports.checkPassword = (email) => {
 };
 
 
-
 ////////////// QUERIES FOR USER_PROFILES TABLE /////////////
 module.exports.addProfileInfo = (age, city, url, userId) => {
     return db.query(
@@ -82,5 +81,16 @@ module.exports.getSignersFromCity = (city) => {
         WHERE LOWER(city) = LOWER($1)
         `,
         [city]
+    );
+};
+
+module.exports.getCurrUserInfo = (userId) => {
+    return db.query(
+        `SELECT * FROM users
+        LEFT JOIN user_profiles
+        ON users.id = user_profiles.user_id
+        WHERE users.id = $1
+        `,
+        [userId]
     );
 };
