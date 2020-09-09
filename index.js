@@ -319,5 +319,6 @@ app.get('/edit-profile', (req, res) => {
 
 // app.get('/edit-profile')
 
-
-app.listen(8080, () => console.log('my petition server is running 🚴‍♀️'));
+app.listen(process.env.PORT || 8080, () =>
+    console.log("my petition server is running 🚴‍♀️")
+);

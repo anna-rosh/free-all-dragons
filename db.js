@@ -1,7 +1,10 @@
 /* eslint-disable no-irregular-whitespace */
 const spicedPg = require('spiced-pg');
 
-var db = spicedPg("postgres:postgres:postgres@localhost:5432/signatures");
+const db = spicedPg(
+    process.env.DATABASE_URL ||
+        "postgres:postgres:postgres@localhost:5432/signatures"
+);
 
 ////////////// QUERIES FOR SIGNATURES TABLE ////////////
 module.exports.addSignature = (sig, userId) => {
