@@ -31,6 +31,16 @@ module.exports.getCurrRow = (id) => {
 };
 
 
+module.exports.checkIfSigned = (userId) => {
+    return db.query(
+        `SELECT * FROM signatures
+        WHERE user_id = $1
+        `,
+        [userId]
+    );
+};
+
+
 ////////////// QUERIES FOR USERS TABLE ////////////
 module.exports.addUser = (first, last, email, password) => {
     return db.query(
@@ -98,11 +108,23 @@ module.exports.getCurrUserInfo = (userId) => {
     );
 };
 
-module.exports.checkIfSigned = (userId) => {
+
+module.exports.updateUsersTable = (first, last, email, userId) => {
     return db.query(
-        `SELECT * FROM signatures
-        WHERE user_id = $1
-        `,
-        [userId]
+        `UPDATE users
+        SET first = $1, last = $2, email = $3
+        WHERE id = $4`,
+        [first, last, email, userId]
+    );
+};
+
+module.exports.updateProfilesTable = (age, city, url, userId) => {
+    return db.query(
+        `INSERT INTO user_profiles (age, city, url)
+        VALUES ($1, $2, $3)
+        ON CONFLICT (user_profiles.user_id)
+        DO UPDATE SET age = $1, city = $2, url = $3
+        WHERE user_profiles.user_id = $4`,
+        [age, city, url, userId]
     );
 };

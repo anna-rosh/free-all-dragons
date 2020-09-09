@@ -244,11 +244,9 @@ app.post('/login', (req, res) => {
                     if (result == true) {
                         // place user's id in the cookie to define her as logged in
                         req.session.userId = id;
-                        console.log(req.session.userId);
                         // check if the user has signed the petition
                         db.checkIfSigned(req.session.userId)
                             .then(({ rows }) => {
-                                console.log("ROWS: ", rows);
                                 if (!rows[0].id) {
                                     res.redirect('/petition');
                                 } else {
@@ -349,7 +347,30 @@ app.get('/edit-profile', (req, res) => {
 
 });
 
-// app.get('/edit-profile')
+app.post('/edit-profile', (req, res) => {
+
+    const { first, last, email, password, age, city, url } = req.body;
+    console.log('REQ.BODY: ', req.body);
+
+    const { userId } = req.session;
+
+    if (!password) {
+        db.updateUsersTable(first, last, email, userId)
+            .then((result) => {
+
+                console.log('RESULT: ', result);
+
+                db.updateProfilesTable(age, city, url, userId)
+                    .then(() => {
+                        console.log('PROFILES WERE UPDATED');
+                    })
+                    .catch(err => console.log('ERR in updateProfilesTable: ', err));
+
+            })
+            .catch(err => console.log('err in updateUsersTable: ', err));
+    }
+
+});
 
 app.listen(process.env.PORT || 8080, () =>
     console.log("my petition server is running 🚴‍♀️")
