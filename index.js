@@ -44,13 +44,16 @@ app.get('/', (req, res) => {
 ///////////////////////// PETITION REQUESTS //////////////////////////
 app.get('/petition', (req, res) => {
 
-    if (req.session.sigId) {
+    if (!req.session.userId) {
+        res.redirect('/register');
+    } else if (req.session.sigId) {
         res.redirect('/thanks');
     } else {
         res.render('petition', {
             layout: 'main',
         });  
     }
+
     
 });
 
@@ -91,7 +94,9 @@ app.post('/petition', (req, res) => {
 /////////////// THANKS REQUESTS ////////////////
 app.get('/thanks', (req, res) => {
 
-    if (!req.session.sigId) {
+    if (!req.session.userId) {
+        res.redirect('/register');
+    } else if (!req.session.sigId) {
         res.redirect('/petition');
     } else {
         // find the current signature id in the cookie
@@ -120,7 +125,9 @@ app.get('/thanks', (req, res) => {
 ////////////////// SIGNERS REQUESTS ////////////////
 app.get('/signers', (req, res) => {
 
-    if (!req.session.sigId) {
+    if (!req.session.userId) {
+        res.redirect('/register');
+    } else if (!req.session.sigId) {
         res.redirect('/petition');
     } else {
         db.getSignersInfo()
@@ -140,22 +147,29 @@ app.get('/signers', (req, res) => {
 ///////////////////// SIGNERS CITY REQUESTS ///////////////
 app.get('/signers/:city', (req, res) => {
 
-    const params = req.params;
-    const { city } = params;
+    if(!req.session.userId) {
+        res.redirect('/register');
+    } else if(!req.session.sigId) {
+        res.redirect('/petition');
+    } else {
+        const params = req.params;
+        const { city } = params;
     
-    db.getSignersFromCity(city)
-        .then(({ rows:rowsWithCity }) => {
+        db.getSignersFromCity(city)
+            .then(({ rows:rowsWithCity }) => {
 
-            res.render('city', {
-                layout: 'main',
-                rowsWithCity,
-                // make params accessible in the city template for puting
-                // city name into the title of the page
-                params
-            });
+                res.render('city', {
+                    layout: 'main',
+                    rowsWithCity,
+                    // make params accessible in the city template for puting
+                    // city name into the title of the page
+                    params
+                });
 
-        })
-        .catch(err => console.log('err in getSignersFromCity: ', err));
+            })
+            .catch(err => console.log('err in getSignersFromCity: ', err));
+
+    } // closes else statement  
 
 });
 
@@ -223,19 +237,29 @@ app.post('/login', (req, res) => {
         .then(( {rows} ) => {
             
             const { password:encodedPassword, id } = rows[0];
-
+            // check if the password is valid for this email
             bc.compare(password, encodedPassword)
                 .then((result) => {
 
                     if (result == true) {
                         // place user's id in the cookie to define her as logged in
                         req.session.userId = id;
+                        console.log(req.session.userId);
                         // check if the user has signed the petition
-                        if(req.session.sigId) {
-                            res.redirect('/thanks');
-                        } else {
-                            res.redirect('/petition');
-                        }
+                        db.checkIfSigned(req.session.userId)
+                            .then(({ rows }) => {
+                                console.log("ROWS: ", rows);
+                                if (!rows[0].id) {
+                                    res.redirect('/petition');
+                                } else {
+                                    req.session.sigId = rows[0].id;
+                                    res.redirect("/thanks");
+                                }
+
+                            })
+                            .catch(err => console.log('err in checkIfSigned: ', err));
+
+                    // if the password isn't matching display an error message
                     } else {
                         res.render("login", {
                             layout: "main",
@@ -281,9 +305,13 @@ app.get('/logout', (req, res) => {
 /////////////////// PROFILE REQUEST ////////////////
 app.get('/profile', (req, res) => {
 
-    res.render('profile', {
-        layout: 'main',
-    });
+    if (!req.session.userId) {
+        res.redirect('/register');
+    } else {
+        res.render('profile', {
+            layout: 'main',
+        }); 
+    }
 
 });
 
@@ -304,16 +332,20 @@ app.post('/profile', (req, res) => {
 //////////////////////////// EDIT-PROFILE REQUESTS ///////////////////////
 app.get('/edit-profile', (req, res) => {
 
-    const { userId } = req.session;
+    if (!req.session.userId) {
+        res.redirect('/register');
+    } else {
+        const { userId } = req.session;
 
-    db.getCurrUserInfo(userId)
-        .then(({ rows:userInfo }) => {
-            res.render('edit-profile', {
-                layout: 'main',
-                userInfo
-            });  
-        })
-        .catch(err => console.log('err in gerCurrUserInfo: ', err));
+        db.getCurrUserInfo(userId)
+            .then(({ rows:userInfo }) => {
+                res.render('edit-profile', {
+                    layout: 'main',
+                    userInfo
+                });  
+            })
+            .catch(err => console.log('err in gerCurrUserInfo: ', err)); 
+    }
 
 });
 

@@ -97,3 +97,12 @@ module.exports.getCurrUserInfo = (userId) => {
         [userId]
     );
 };
+
+module.exports.checkIfSigned = (userId) => {
+    return db.query(
+        `SELECT * FROM signatures
+        WHERE user_id = $1
+        `,
+        [userId]
+    );
+};
