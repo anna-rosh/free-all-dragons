@@ -40,6 +40,14 @@ module.exports.checkIfSigned = (userId) => {
     );
 };
 
+module.exports.deleteSignature = (sigId) => {
+    return db.query(
+        `DELETE FROM signatures
+        WHERE id = $1`,
+        [sigId]
+    );
+};
+
 
 ////////////// QUERIES FOR USERS TABLE ////////////
 module.exports.addUser = (first, last, email, password) => {
@@ -118,12 +126,22 @@ module.exports.updateUsersTable = (first, last, email, userId) => {
     );
 };
 
+module.exports.updateUsersTableWithPassword = (first, last, email, password, userId) => {
+    return db.query(
+        `UPDATE users
+        SET first = $1, last = $2, email = $3, password = $4
+        WHERE id = $5`,
+        [first, last, email, password, userId]
+    );
+};
+
+
 module.exports.updateProfilesTable = (age, city, url, userId) => {
     return db.query(
         `INSERT INTO user_profiles (age, city, url, user_id)
         VALUES ($1, $2, $3, $4)
         ON CONFLICT (user_id)
         DO UPDATE SET age = $1, city = $2, url = $3, user_id = $4`,
-        [age, city, url, userId]
+        [age || null, city, url, userId]
     );
 };

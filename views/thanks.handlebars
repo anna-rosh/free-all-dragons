@@ -11,4 +11,8 @@
         <a href="/signers">See all {{count}} signers</a>
     {{/allRows}}
     <a href="/profile/edit">Edit profile</a>
+    <form class="delete-sig-form" method="post">
+        <input type="hidden" name="_csrf" value="{{csrfToken}}">
+        <button class="delete-sig-btn" type="submit">Delete signature</button>
+    </form>
 </div>

@@ -66,10 +66,11 @@ app.post('/petition', (req, res) => {
     // use this data to create a new row in the database
     db.addSignature(signature, userId)
         .then(({ rows }) => {
-
+            console.log(rows);
             const { id } = rows[0]; 
 
             req.session.sigId = id;
+            console.log('SIGNATURE COOKIE: ', req.session.sigId);
         
             res.redirect('/thanks');
 
@@ -93,6 +94,8 @@ app.post('/petition', (req, res) => {
 
 /////////////// THANKS REQUESTS ////////////////
 app.get('/thanks', (req, res) => {
+
+    console.log("REQ.SESSION IN GET /THANKS: ", req.session);
 
     if (!req.session.userId) {
         res.redirect('/register');
@@ -122,8 +125,23 @@ app.get('/thanks', (req, res) => {
 
 }); // closes get request on /thanks
 
+app.post('/thanks', (req, res) => {
+    console.log('REQ.SESSION IN POST /THANKS: ', req.session);
+    const { sigId } = req.session;
+    
+    db.deleteSignature(sigId)
+        .then(() => {
+            req.session.sigId = null;
+            res.redirect('/petition');
+        })
+        .catch(err => console.log('err in deleteSignature: ', err));
+
+});
+
 ////////////////// SIGNERS REQUESTS ////////////////
 app.get('/signers', (req, res) => {
+
+    console.log('REQ.SESSION IN GET /SIGNERS: ', req.session);
 
     if (!req.session.userId) {
         res.redirect('/register');
@@ -230,6 +248,7 @@ app.get('/login', (req, res) => {
 
 app.post('/login', (req, res) => {
 
+    
     const { email, password } = req.body;
     // the function also checks validity of the email address 
     // as it won't work with an address which is not present in the table
@@ -251,6 +270,11 @@ app.post('/login', (req, res) => {
                                     res.redirect('/petition');
                                 } else {
                                     req.session.sigId = rows[0].id;
+                                    console.log(
+                                        "SIGNATURE COOKIE IN POST /LOGIN: ",
+                                        req.session.sigId
+                                    );
+
                                     res.redirect("/thanks");
                                 }
 
@@ -293,9 +317,7 @@ app.get('/logout', (req, res) => {
 
     req.session = null;
 
-    res.render('logout', {
-        layout: 'main'
-    });
+    res.redirect('/login');
 
 });
 
@@ -365,33 +387,55 @@ app.post('/profile/edit', (req, res) => {
                     .catch(err => console.log('ERR in updateProfilesTable: ', err));
 
             })
-            .catch(err => console.log('err in updateUsersTable: ', err));
-    // do the following if the user updated her password:
-    } 
+            .catch(err => {
+                console.log('err in updateUsersTable: ', err);
 
-});
+                res.render("edit", {
+                    layout: "main",
+                    helpers: {
+                        addVisibility() {
+                            return "visible";
+                        },
+                    },
+                });
+
+            });
+    
+    } else {
+    // do the following if the user updated her password:
+        bc.hash(password)
+            .then((hashedPassword) => {
+                db.updateUsersTableWithPassword(first, last, email, hashedPassword, userId)
+                    .then(() => {
+                        db.updateProfilesTable(age, city, url, userId)
+                            .then(() => {
+                                res.redirect("/thanks");
+                            })
+                            .catch((err) =>
+                                console.log("ERR in updateProfilesTable: ", err)
+                            );
+                    })
+                    .catch(err => {
+                        console.log("err in updateUsersTableWithPassword: ", err);
+
+                        res.render("edit", {
+                            layout: "main",
+                            helpers: {
+                                addVisibility() {
+                                    return "visible";
+                                },
+                            },
+                        });
+                    });
+            })
+            .catch(err => console.log('err in hash in post on /profile/edit: ', err));
+
+    } // closes else statement: users changes password
+
+}); // closes post request on /profile/edit
+
 
 app.listen(process.env.PORT || 8080, () =>
     console.log("my petition server is running 🚴‍♀️")
 );
 
-
-
-/////// NOTES //////
-
-// const requireLoggedOutUser = (req, res, next) => {
-//     if (req.session.userId) {
-//         res.redirect('/petition');
-//     } else {
-//         next();
-//     }
-// };
-
-// we can write such a middleware function and pass it as an additional argument to the request.
-// we can pass as arguments a few functions not only one
-
-// app.get('/register', requireLoggedOutUser, (res, req) => {
-    
-// });
-
-// export app to other files: exports.app = app;

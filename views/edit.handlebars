@@ -9,7 +9,7 @@
         <input class="password" type="text" name="password" placeholder="password">
         <input class="age" type="text" name="age" placeholder="age" value="{{age}}">
         <input class="city" type="text" name="city" placeholder="city" value="{{city}}">
-        <input class="url" type="text" name="url" placeholder="https://your-hompage.com" title="https:// or http://">
+        <input class="url" type="text" name="url" placeholder="https://your-hompage.com" pattern="https?://.*" title="https:// or http://" value={{url}}>
         {{/userInfo}}
         <input type="hidden" name="_csrf" value="{{csrfToken}}">
         <button type="submit">update</button>
