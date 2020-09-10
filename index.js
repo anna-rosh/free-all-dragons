@@ -328,7 +328,7 @@ app.post('/profile', (req, res) => {
 
 
 //////////////////////////// EDIT-PROFILE REQUESTS ///////////////////////
-app.get('/edit-profile', (req, res) => {
+app.get('/profile/edit', (req, res) => {
 
     if (!req.session.userId) {
         res.redirect('/register');
@@ -337,7 +337,7 @@ app.get('/edit-profile', (req, res) => {
 
         db.getCurrUserInfo(userId)
             .then(({ rows:userInfo }) => {
-                res.render('edit-profile', {
+                res.render('edit', {
                     layout: 'main',
                     userInfo
                 });  
@@ -347,31 +347,51 @@ app.get('/edit-profile', (req, res) => {
 
 });
 
-app.post('/edit-profile', (req, res) => {
+app.post('/profile/edit', (req, res) => {
 
     const { first, last, email, password, age, city, url } = req.body;
-    console.log('REQ.BODY: ', req.body);
 
     const { userId } = req.session;
 
     if (!password) {
+    // do the following if the user didn't update her password:
         db.updateUsersTable(first, last, email, userId)
-            .then((result) => {
-
-                console.log('RESULT: ', result);
+            .then(() => {
 
                 db.updateProfilesTable(age, city, url, userId)
                     .then(() => {
-                        console.log('PROFILES WERE UPDATED');
+                        res.redirect('/thanks');
                     })
                     .catch(err => console.log('ERR in updateProfilesTable: ', err));
 
             })
             .catch(err => console.log('err in updateUsersTable: ', err));
-    }
+    // do the following if the user updated her password:
+    } 
 
 });
 
 app.listen(process.env.PORT || 8080, () =>
     console.log("my petition server is running 🚴‍♀️")
 );
+
+
+
+/////// NOTES //////
+
+// const requireLoggedOutUser = (req, res, next) => {
+//     if (req.session.userId) {
+//         res.redirect('/petition');
+//     } else {
+//         next();
+//     }
+// };
+
+// we can write such a middleware function and pass it as an additional argument to the request.
+// we can pass as arguments a few functions not only one
+
+// app.get('/register', requireLoggedOutUser, (res, req) => {
+    
+// });
+
+// export app to other files: exports.app = app;

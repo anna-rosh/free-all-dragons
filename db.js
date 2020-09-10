@@ -120,11 +120,10 @@ module.exports.updateUsersTable = (first, last, email, userId) => {
 
 module.exports.updateProfilesTable = (age, city, url, userId) => {
     return db.query(
-        `INSERT INTO user_profiles (age, city, url)
-        VALUES ($1, $2, $3)
-        ON CONFLICT (user_profiles.user_id)
-        DO UPDATE SET age = $1, city = $2, url = $3
-        WHERE user_profiles.user_id = $4`,
+        `INSERT INTO user_profiles (age, city, url, user_id)
+        VALUES ($1, $2, $3, $4)
+        ON CONFLICT (user_id)
+        DO UPDATE SET age = $1, city = $2, url = $3, user_id = $4`,
         [age, city, url, userId]
     );
 };
