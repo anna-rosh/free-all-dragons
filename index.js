@@ -66,11 +66,10 @@ app.post('/petition', (req, res) => {
     // use this data to create a new row in the database
     db.addSignature(signature, userId)
         .then(({ rows }) => {
-            console.log(rows);
+            
             const { id } = rows[0]; 
 
             req.session.sigId = id;
-            console.log('SIGNATURE COOKIE: ', req.session.sigId);
         
             res.redirect('/thanks');
 
@@ -94,8 +93,6 @@ app.post('/petition', (req, res) => {
 
 /////////////// THANKS REQUESTS ////////////////
 app.get('/thanks', (req, res) => {
-
-    console.log("REQ.SESSION IN GET /THANKS: ", req.session);
 
     if (!req.session.userId) {
         res.redirect('/register');
@@ -126,7 +123,7 @@ app.get('/thanks', (req, res) => {
 }); // closes get request on /thanks
 
 app.post('/thanks', (req, res) => {
-    console.log('REQ.SESSION IN POST /THANKS: ', req.session);
+
     const { sigId } = req.session;
     
     db.deleteSignature(sigId)
@@ -140,8 +137,6 @@ app.post('/thanks', (req, res) => {
 
 ////////////////// SIGNERS REQUESTS ////////////////
 app.get('/signers', (req, res) => {
-
-    console.log('REQ.SESSION IN GET /SIGNERS: ', req.session);
 
     if (!req.session.userId) {
         res.redirect('/register');
@@ -270,10 +265,6 @@ app.post('/login', (req, res) => {
                                     res.redirect('/petition');
                                 } else {
                                     req.session.sigId = rows[0].id;
-                                    console.log(
-                                        "SIGNATURE COOKIE IN POST /LOGIN: ",
-                                        req.session.sigId
-                                    );
 
                                     res.redirect("/thanks");
                                 }

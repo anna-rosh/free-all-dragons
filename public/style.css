@@ -6,7 +6,8 @@
 body {
     font-family: Arial, Helvetica, sans-serif;
     background-color: rgb(243, 238, 231);
-    color: rgb(87, 84, 84);
+    color: green;
+    /* color: rgb(87, 84, 84); */
     height: 100%;
 }
 
