@@ -36,6 +36,39 @@ app.use(function (req, res, next) {
 
 app.use(express.static('./public'));
 
+/////////////////// ROUTE MIDDLEWARE FUNCTIONS ///////////////////
+const requireLoggedOutUser = (req, res, next) => {
+    if (req.session.userId) {
+        res.redirect('/');
+    } else {
+        next();
+    }
+};
+
+const requireLoggedInUser = (req, res, next) => {
+    if (!req.session.userId) {
+        res.redirect('/register');
+    } else {
+        next();
+    }
+};
+
+const allowNoSignature = (req, res, next) => {
+    if (req.session.sigId) {
+        res.redirect('/thanks');
+    } else {
+        next();
+    }
+};
+
+const requireSignature = (req, res, next) => {
+    if (!req.session.sigId) {
+        res.redirect('/petition');
+    } else {
+        next();
+    }
+};
+
 
 ////////////////////////// ROOT ROUTE REQUESTS ///////////////////////
 app.get('/', (req, res) => {
@@ -43,23 +76,14 @@ app.get('/', (req, res) => {
 });
 
 ///////////////////////// PETITION REQUESTS //////////////////////////
-app.get('/petition', (req, res) => {
-
-    if (!req.session.userId) {
-        res.redirect('/register');
-    } else if (req.session.sigId) {
-        res.redirect('/thanks');
-    } else {
+app.get('/petition', requireLoggedInUser, allowNoSignature, (req, res) => {
         res.render('petition', {
             layout: 'main',
-        });  
-    }
-
-    
+        });
 });
 
 
-app.post('/petition', (req, res) => {
+app.post('/petition', requireLoggedInUser, allowNoSignature, (req, res) => {
     // get the user data from the request
     const { signature } = req.body;
     // get the users.id from the cookie to store it in signatures table
@@ -93,37 +117,29 @@ app.post('/petition', (req, res) => {
 
 
 /////////////// THANKS REQUESTS ////////////////
-app.get('/thanks', (req, res) => {
+app.get('/thanks', requireLoggedInUser, requireSignature, (req, res) => {
+    // find the current signature id in the cookie
+    let currSigId = req.session.sigId;
 
-    if (!req.session.userId) {
-        res.redirect('/register');
-    } else if (!req.session.sigId) {
-        res.redirect('/petition');
-    } else {
-        // find the current signature id in the cookie
-        let currSigId = req.session.sigId;
+    db.countRows()
+        .then(({ rows:allRows }) => {
 
-        db.countRows()
-            .then(({ rows:allRows }) => {
+            db.getCurrRow(currSigId).then(({ rows:currRow }) => {
+                res.render('thanks', {
+                    layout: 'main',
+                    currRow,
+                    allRows
+                });
+            }).catch(err => console.log('error in getSigUrl: ', err)); // catch for getSigUrl
 
-                db.getCurrRow(currSigId).then(({ rows:currRow }) => {
-                    res.render('thanks', {
-                        layout: 'main',
-                        currRow,
-                        allRows
-                    });
-                }).catch(err => console.log('error in getSigUrl: ', err)); // catch for getSigUrl
-
-            })
-            .catch((err) => {
-                console.log('err in getSigUrl: ', err);
-            }); // catch for countRows
-
-    } // closes else statement
+        })
+        .catch((err) => {
+            console.log('err in getSigUrl: ', err);
+        }); // catch for countRows
 
 }); // closes get request on /thanks
 
-app.post('/thanks', (req, res) => {
+app.post('/thanks', requireLoggedInUser, requireSignature, (req, res) => {
 
     const { sigId } = req.session;
     
@@ -137,59 +153,45 @@ app.post('/thanks', (req, res) => {
 });
 
 ////////////////// SIGNERS REQUESTS ////////////////
-app.get('/signers', (req, res) => {
+app.get('/signers', requireLoggedInUser, requireSignature, (req, res) => {
 
-    if (!req.session.userId) {
-        res.redirect('/register');
-    } else if (!req.session.sigId) {
-        res.redirect('/petition');
-    } else {
-        db.getSignersInfo()
-            .then(({ rows:signers }) => {
+    db.getSignersInfo()
+        .then(({ rows:signers }) => {
 
-                res.render("signers", {
-                    layout: "main",
-                    signers
-                });
-            })
-            .catch((err) => console.log("err in getSignersInfo: ", err)); 
-
-    } // closes else statement
+            res.render("signers", {
+                layout: "main",
+                signers
+            });
+        })
+        .catch((err) => console.log("err in getSignersInfo: ", err)); 
 
 }); // closes get request on /signers
 
 ///////////////////// SIGNERS CITY REQUESTS ///////////////
-app.get('/signers/:city', (req, res) => {
+app.get('/signers/:city', requireLoggedInUser, requireSignature, (req, res) => {
 
-    if(!req.session.userId) {
-        res.redirect('/register');
-    } else if(!req.session.sigId) {
-        res.redirect('/petition');
-    } else {
-        const params = req.params;
-        const { city } = params;
+    const params = req.params;
+    const { city } = params;
     
-        db.getSignersFromCity(city)
-            .then(({ rows:rowsWithCity }) => {
+    db.getSignersFromCity(city)
+        .then(({ rows:rowsWithCity }) => {
 
-                res.render('city', {
-                    layout: 'main',
-                    rowsWithCity,
-                    // make params accessible in the city template for puting
-                    // city name into the title of the page
-                    params
-                });
+            res.render('city', {
+                layout: 'main',
+                rowsWithCity,
+                // make params accessible in the city template for puting
+                // city name into the title of the page
+                params
+            });
 
-            })
-            .catch(err => console.log('err in getSignersFromCity: ', err));
-
-    } // closes else statement  
+        })
+        .catch(err => console.log('err in getSignersFromCity: ', err));
 
 });
 
 
 ////////////////// REGISTER REQUESTS //////////////////
-app.get('/register', (req, res) => {
+app.get('/register', requireLoggedOutUser, (req, res) => {
 
     res.render('register', {
         layout: 'main'
@@ -197,7 +199,7 @@ app.get('/register', (req, res) => {
 
 });
 
-app.post('/register', (req, res) => {
+app.post('/register', requireLoggedOutUser, (req, res) => {
 
     let { first, last, email, password } = req.body;
     // encode the password provided by user (from req.body)
@@ -234,7 +236,7 @@ app.post('/register', (req, res) => {
 
 
 //////////////////////////// LOGIN REQUESTS ///////////////////////////
-app.get('/login', (req, res) => {
+app.get('/login', requireLoggedOutUser, (req, res) => {
 
     res.render("login", {
         layout: "main",
@@ -250,7 +252,6 @@ app.post('/login', (req, res) => {
     // as it won't work with an address which is not present in the table
     db.checkPassword(email)
         .then(( {rows} ) => {
-            
             const { password:encodedPassword, id } = rows[0];
             // check if the password is valid for this email
             bc.compare(password, encodedPassword)
@@ -262,7 +263,8 @@ app.post('/login', (req, res) => {
                         // check if the user has signed the petition
                         db.checkIfSigned(req.session.userId)
                             .then(({ rows }) => {
-                                if (!rows[0].id) {
+                                
+                                if (rows[0] == undefined) {
                                     res.redirect('/petition');
                                 } else {
                                     req.session.sigId = rows[0].id;
@@ -305,7 +307,7 @@ app.post('/login', (req, res) => {
 });
 
 ////////////////// LOGOUT REQUEST ///////////////
-app.get('/logout', (req, res) => {
+app.get('/logout', requireLoggedInUser, (req, res) => {
 
     req.session = null;
 
@@ -315,19 +317,13 @@ app.get('/logout', (req, res) => {
 
 
 /////////////////// PROFILE REQUEST ////////////////
-app.get('/profile', (req, res) => {
-
-    if (!req.session.userId) {
-        res.redirect('/register');
-    } else {
+app.get('/profile', requireLoggedInUser, (req, res) => {
         res.render('profile', {
             layout: 'main',
-        }); 
-    }
-
+        });
 });
 
-app.post('/profile', (req, res) => {
+app.post('/profile', requireLoggedInUser, (req, res) => {
 
     let { age, city, url } =  req.body;
 
@@ -341,11 +337,8 @@ app.post('/profile', (req, res) => {
 
 
 //////////////////////////// EDIT-PROFILE REQUESTS ///////////////////////
-app.get('/profile/edit', (req, res) => {
+app.get('/profile/edit', requireLoggedInUser, (req, res) => {
 
-    if (!req.session.userId) {
-        res.redirect('/register');
-    } else {
         const { userId } = req.session;
 
         db.getCurrUserInfo(userId)
@@ -355,12 +348,11 @@ app.get('/profile/edit', (req, res) => {
                     userInfo
                 });  
             })
-            .catch(err => console.log('err in gerCurrUserInfo: ', err)); 
-    }
+            .catch(err => console.log('err in gerCurrUserInfo: ', err));
 
 });
 
-app.post('/profile/edit', (req, res) => {
+app.post('/profile/edit', requireLoggedInUser, (req, res) => {
 
     const { first, last, email, password, age, city, url } = req.body;
 
@@ -426,7 +418,7 @@ app.post('/profile/edit', (req, res) => {
 }); // closes post request on /profile/edit
 
 ///////////////////// DELETE REQUESTS /////////////////////
-app.get('/profile/delete', (req, res) => {
+app.get('/profile/delete', requireLoggedInUser, (req, res) => {
 
     res.render('delete', {
         layout: 'main'
@@ -434,10 +426,13 @@ app.get('/profile/delete', (req, res) => {
 
 });
 
-app.post('/profile/delete', (req, res) => {
+app.post('/profile/delete', requireLoggedInUser, (req, res) => {
 
     db.deleteProfile(req.session.userId)
-        .then(() => res.redirect('/register'))
+        .then(() => {
+            req.session = null;
+            res.redirect('/register');
+        })
         .catch(err => console.log('err in deleteProfile: ', err));
 
 });
@@ -446,4 +441,3 @@ app.post('/profile/delete', (req, res) => {
 app.listen(process.env.PORT || 8080, () =>
     console.log("my petition server is running 🚴‍♀️")
 );
-
