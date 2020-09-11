@@ -145,3 +145,11 @@ module.exports.updateProfilesTable = (age, city, url, userId) => {
         [age || null, city, url, userId]
     );
 };
+
+module.exports.deleteProfile = (userId) => {
+    return db.query(
+        `DELETE FROM users
+        WHERE id = $1`,
+        [userId]
+    );
+};

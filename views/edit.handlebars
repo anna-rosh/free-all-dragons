@@ -1,8 +1,10 @@
+{{>logout}}
 <div class="container edit-container">
     <h1>here you can edit your profile</h1>
+    <p class="warning" style="visibility: {{addVisibility}}">Something went wrong. Please make sure you filled out all the required fields.</p>
+    <a href="/profile/edit"><p class="warning" style="visibility: {{addVisibility}}">Click here to try to edit again</p></a>
      <form method="post">
          {{#userInfo}}
-        <p class="warning" style="visibility: {{addVisibility}}">Something went wrong. Please, try again</p>
         <input class="name first" type="text" name="first" placeholder="first name" value="{{first}}">
         <input class="name last" type="text" name="last" placeholder="last name" value="{{last}}">
         <input class="email" type="text" name="email" placeholder="email address" value="{{email}}">
@@ -14,4 +16,5 @@
         <input type="hidden" name="_csrf" value="{{csrfToken}}">
         <button type="submit">update</button>
     </form>
+    <a href="/profile/delete">delete profile</a>
 </div>

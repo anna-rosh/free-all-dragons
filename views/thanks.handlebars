@@ -1,4 +1,4 @@
-{{>logout}}
+{{>logout notEdit=true}}
 <div class="container thanks-container">
     {{#currRow}}
         <h1>Thank you</h1>
@@ -10,7 +10,6 @@
     {{#allRows}}
         <a href="/signers">See all {{count}} signers</a>
     {{/allRows}}
-    <a href="/profile/edit">Edit profile</a>
     <form class="delete-sig-form" method="post">
         <input type="hidden" name="_csrf" value="{{csrfToken}}">
         <button class="delete-sig-btn" type="submit">Delete signature</button>

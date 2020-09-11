@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 const express = require('express');
 const app = express();
 const handlebars = require('express-handlebars');
@@ -329,7 +330,6 @@ app.get('/profile', (req, res) => {
 app.post('/profile', (req, res) => {
 
     let { age, city, url } =  req.body;
-    console.log('PROFILE POST INPUT: ', req.body);
 
     const { userId } = req.session;
         
@@ -390,7 +390,7 @@ app.post('/profile/edit', (req, res) => {
                     },
                 });
 
-            });
+            }); // closes catch on updateUsersTable
     
     } else {
     // do the following if the user updated her password:
@@ -402,9 +402,9 @@ app.post('/profile/edit', (req, res) => {
                             .then(() => {
                                 res.redirect("/thanks");
                             })
-                            .catch((err) =>
-                                console.log("ERR in updateProfilesTable: ", err)
-                            );
+                            .catch((err) => {
+                                console.log("ERR in updateProfilesTable: ", err);
+                            });
                     })
                     .catch(err => {
                         console.log("err in updateUsersTableWithPassword: ", err);
@@ -424,6 +424,23 @@ app.post('/profile/edit', (req, res) => {
     } // closes else statement: users changes password
 
 }); // closes post request on /profile/edit
+
+///////////////////// DELETE REQUESTS /////////////////////
+app.get('/profile/delete', (req, res) => {
+
+    res.render('delete', {
+        layout: 'main'
+    });
+
+});
+
+app.post('/profile/delete', (req, res) => {
+
+    db.deleteProfile(req.session.userId)
+        .then(() => res.redirect('/register'))
+        .catch(err => console.log('err in deleteProfile: ', err));
+
+});
 
 
 app.listen(process.env.PORT || 8080, () =>
