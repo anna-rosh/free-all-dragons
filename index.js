@@ -75,13 +75,130 @@ app.get('/', (req, res) => {
     res.redirect('/petition');
 });
 
+
+//////////////////////// REGISTER REQUESTS //////////////////////
+app.get('/register', requireLoggedOutUser, (req, res) => {
+
+    res.render('register', {
+        layout: 'main'
+    });
+
+});
+
+app.post('/register', requireLoggedOutUser, (req, res) => {
+
+    let { first, last, email, password } = req.body;
+    // encode the password provided by user (from req.body)
+    bc.hash(password)
+        .then((hashedPassword) => {
+            // insert the hashed password into the database along with other user information
+            db.addUser(first, last, email, hashedPassword)
+                .then(({ rows }) => {
+
+                    const { id } = rows[0];
+                    // store user's id in a cookie to define her as registered/logged in
+                    req.session.userId = id;
+
+                    res.redirect('/profile');
+                    
+                })
+                .catch((err) => {
+                    console.log("ERR in addUser: ", err);
+
+                    res.render("register", {
+                        layout: "main",
+                        helpers: {
+                            addVisibility() {
+                                return "visible";
+                            },
+                        },
+                    });
+                });
+
+        })
+        .catch((err) => console.log('err in hash: ', err));
+
+});
+
+
+//////////////////////////// LOGIN REQUESTS ///////////////////////////
+app.get('/login', requireLoggedOutUser, (req, res) => {
+
+    res.render("login", {
+        layout: "main",
+    });
+
+});
+
+app.post('/login', (req, res) => {
+
+    
+    const { email, password } = req.body;
+    // the function also checks validity of the email address 
+    // as it won't work with an address which is not present in the table
+    db.checkPassword(email)
+        .then(( {rows} ) => {
+            const { password:encodedPassword, id } = rows[0];
+            // check if the password is valid for this email
+            bc.compare(password, encodedPassword)
+                .then((result) => {
+
+                    if (result == true) {
+                        // place user's id in the cookie to define her as logged in
+                        req.session.userId = id;
+                        // check if the user has signed the petition
+                        db.checkIfSigned(req.session.userId)
+                            .then(({ rows }) => {
+
+                                if (rows[0] == undefined) {
+                                    res.redirect('/petition');
+                                } else {
+                                    req.session.sigId = rows[0].id;
+
+                                    res.redirect("/thanks");
+                                }
+
+                            })
+                            .catch(err => console.log('err in checkIfSigned: ', err));
+
+                    // if the password isn't matching display an error message
+                    } else {
+                        res.render("login", {
+                            layout: "main",
+                            helpers: {
+                                addVisibility() {
+                                    return "visible";
+                                },
+                            },
+                        });
+                    }
+                
+                })
+                .catch(err => console.log('err in compare: ', err)); // closes catch on compare
+
+        })
+        .catch((err) => {
+            console.log('err in checkPassword: ', err);
+
+            res.render("login", {
+                layout: "main",
+                helpers: {
+                    addVisibility() {
+                        return "visible";
+                    },
+                },
+            });
+        });
+
+});
+
+
 ///////////////////////// PETITION REQUESTS //////////////////////////
 app.get('/petition', requireLoggedInUser, allowNoSignature, (req, res) => {
         res.render('petition', {
             layout: 'main',
         });
 });
-
 
 app.post('/petition', requireLoggedInUser, allowNoSignature, (req, res) => {
     // get the user data from the request
@@ -189,133 +306,6 @@ app.get('/signers/:city', requireLoggedInUser, requireSignature, (req, res) => {
 
 });
 
-
-////////////////// REGISTER REQUESTS //////////////////
-app.get('/register', requireLoggedOutUser, (req, res) => {
-
-    res.render('register', {
-        layout: 'main'
-    });
-
-});
-
-app.post('/register', requireLoggedOutUser, (req, res) => {
-
-    let { first, last, email, password } = req.body;
-    // encode the password provided by user (from req.body)
-    bc.hash(password)
-        .then((hashedPassword) => {
-            // insert the hashed password into the database along with other user information
-            db.addUser(first, last, email, hashedPassword)
-                .then(({ rows }) => {
-
-                    const { id } = rows[0];
-                    // store user's id in a cookie to define her as registered/logged in
-                    req.session.userId = id;
-
-                    res.redirect('/profile');
-                    
-                })
-                .catch((err) => {
-                    console.log("ERR in addUser: ", err);
-
-                    res.render("register", {
-                        layout: "main",
-                        helpers: {
-                            addVisibility() {
-                                return "visible";
-                            },
-                        },
-                    });
-                });
-
-        })
-        .catch((err) => console.log('err in hash: ', err));
-
-});
-
-
-//////////////////////////// LOGIN REQUESTS ///////////////////////////
-app.get('/login', requireLoggedOutUser, (req, res) => {
-
-    res.render("login", {
-        layout: "main",
-    });
-
-});
-
-app.post('/login', (req, res) => {
-
-    
-    const { email, password } = req.body;
-    // the function also checks validity of the email address 
-    // as it won't work with an address which is not present in the table
-    db.checkPassword(email)
-        .then(( {rows} ) => {
-            const { password:encodedPassword, id } = rows[0];
-            // check if the password is valid for this email
-            bc.compare(password, encodedPassword)
-                .then((result) => {
-
-                    if (result == true) {
-                        // place user's id in the cookie to define her as logged in
-                        req.session.userId = id;
-                        // check if the user has signed the petition
-                        db.checkIfSigned(req.session.userId)
-                            .then(({ rows }) => {
-                                
-                                if (rows[0] == undefined) {
-                                    res.redirect('/petition');
-                                } else {
-                                    req.session.sigId = rows[0].id;
-
-                                    res.redirect("/thanks");
-                                }
-
-                            })
-                            .catch(err => console.log('err in checkIfSigned: ', err));
-
-                    // if the password isn't matching display an error message
-                    } else {
-                        res.render("login", {
-                            layout: "main",
-                            helpers: {
-                                addVisibility() {
-                                    return "visible";
-                                },
-                            },
-                        });
-                    }
-                
-                })
-                .catch(err => console.log('err in compare: ', err)); // closes catch on compare
-
-        })
-        .catch((err) => {
-            console.log('err in checkPassword: ', err);
-
-            res.render("login", {
-                layout: "main",
-                helpers: {
-                    addVisibility() {
-                        return "visible";
-                    },
-                },
-            });
-        });
-
-});
-
-////////////////// LOGOUT REQUEST ///////////////
-app.get('/logout', requireLoggedInUser, (req, res) => {
-
-    req.session = null;
-
-    res.redirect('/login');
-
-});
-
-
 /////////////////// PROFILE REQUEST ////////////////
 app.get('/profile', requireLoggedInUser, (req, res) => {
         res.render('profile', {
@@ -334,6 +324,20 @@ app.post('/profile', requireLoggedInUser, (req, res) => {
         .catch((err) => console.log("err in addProfileInfo: ", err));
 
 });
+
+
+
+////////////////// LOGOUT REQUEST ///////////////
+app.get('/logout', requireLoggedInUser, (req, res) => {
+
+    req.session = null;
+
+    res.redirect('/login');
+
+});
+
+
+
 
 
 //////////////////////////// EDIT-PROFILE REQUESTS ///////////////////////

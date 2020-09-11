@@ -1,14 +1,22 @@
 <div class="container registration-container">
-    <h1>here is the registration page</h1>
-    <h2>sign up to join our petition</h2>
-    <form method="post">
-        <p class="warning" style="visibility: {{addVisibility}}">Something went wrong. Please, try again</p>
-        <input class="name first" type="text" name="first" placeholder="first name">
-        <input class="name last" type="text" name="last" placeholder="last name">
-        <input class="email" type="text" name="email" placeholder="email address">
-        <input class="password" type="text" name="password" placeholder="password">
-        <input type="hidden" name="_csrf" value="{{csrfToken}}">
-        <button type="submit">sign up</button>
-    </form>
-    <h2>if you are already registered, please <a href="/login">log in</a></h2>
+    <div class="text-container">
+        <div class="title">
+            <h1>free all dragons</h1>
+            <h2>please register to sign the petition</h2>
+        </div> 
+        <form class="register-form" method="post">
+            <p class="warning" style="visibility: {{addVisibility}}">Something went wrong. Please, try again</p>
+            <input class="name first" type="text" name="first" placeholder="first name*">
+            <input class="name last" type="text" name="last" placeholder="last name*">
+            <input class="email" type="text" name="email" placeholder="email address*">
+            <input class="password" type="text" name="password" placeholder="password*">
+            <input type="hidden" name="_csrf" value="{{csrfToken}}">
+            <p class="required">* required fields</p>
+            <button type="submit">sign up</button>
+        </form>
+    </div>
+    <h2 class="login">if you are already registered, please <a href="/login">log in</a></h2>
+</div> 
+<div class="dragon-container">
+        <img class="register-dragon" src="/images/dragon-register.png" alt="somedragon">
 </div>
