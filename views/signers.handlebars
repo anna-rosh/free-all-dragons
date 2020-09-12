@@ -1,19 +1,29 @@
 <div class="container signers-container">
-    <div class="signers">
+    <div class="text-container-signers">
         <h1>meet other proud signers!</h1>
-        {{#signers}}
-            {{#if url}}
-                <h3><a href="{{url}}" target="_blank">{{first}} {{last}}</a>{{#if age}}, {{age}}{{/if}}
-                {{#if city}}, <a href="/signers/{{city}}">{{city}}</a>{{/if}}
-                </h3>
-            {{else}}
-                <h3>{{first}} {{last}}{{#if age}}, {{age}}{{/if}}
-                {{#if city}}, <a href="/signers/{{city}}">{{city}}</a>{{/if}}
-                </h3>
-            {{/if}}
-        {{/signers}}   
+        <div class="under-header">
+            <h1 class="logo">free all dragons</h1>
+            <div class="list">
+            {{#signers}}
+                {{#if url}}
+                    <h3><a href="{{url}}" target="_blank">{{first}} {{last}}</a>{{#if age}}, {{age}}{{/if}}
+                    {{#if city}}, <a href="/signers/{{city}}">{{city}}</a>{{/if}}
+                    </h3>
+                {{else}}
+                    <h3>{{first}} {{last}}{{#if age}}, {{age}}{{/if}}
+                    {{#if city}}, <a href="/signers/{{city}}">{{city}}</a>{{/if}}
+                    </h3>
+                {{/if}}
+            {{/signers}}   
+            </div>
+        </div>
+         
     </div>
     <div class="nav">
         {{>logout notEdit=true}}
+        <a href="/thanks">back</a>
     </div>    
+</div>
+<div class="dragon-container" id="dragon-signers">
+        <img class="dragon" src="/images/dragon-signers2.png" alt="somedragon">
 </div>

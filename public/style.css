@@ -133,7 +133,8 @@ button:active {
 .login-container a:hover,
 .profile-container a:hover,
 .nav a:hover,
-.see-signers:hover {
+.see-signers:hover,
+.signers-container .list a:hover {
     color: rgba(20, 83, 73, 0.7);
     text-decoration: underline;
 }
@@ -142,7 +143,8 @@ button:active {
 .login-container a:active,
 .profile-container a:active,
 .nav a:active,
-.see-signers:active {
+.see-signers:active,
+.signers-container .list a:active {
     color: rgba(20, 83, 73, 0.7);
 }
 
@@ -158,6 +160,7 @@ button:active {
 .dragon {
     opacity: 0.7;
     object-fit: contain;
+    z-index: -2;
 }
 
 
@@ -340,4 +343,53 @@ button:active {
 #dragon-img-thanks {
     width: 900px;
 }
+
+
+/*  SIGNERS ******************* SIGNERS ******************** SIGNERS ******************* SIGNERS */
+.signers-container .text-container-signers {
+    width: 450px;
+}
+
+.signers-container h1 {
+    margin-bottom: 5px;
+    font-size: 35px;
+}
+
+.signers-container .under-header {
+    display: flex;
+}
+
+.signers-container .under-header h1 {
+    writing-mode: tb-rl;
+    transform: rotate(-180deg);
+    font-size: 45px;
+    border: 5px solid black;
+    padding-bottom: 81px;
+    margin-right: 10px;
+}
+
+.signers-container .list {
+    width: 440px;
+    height: 431px;
+    overflow: scroll;
+    line-height: 43px;
+}
+
+.signers-container h3 {
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+.signers-container .list a {
+    text-decoration: none;
+    color: rgb(20, 83, 73);
+    font-weight: 600;
+}
+
+#dragon-signers {
+    top: 10%;
+    right: 27%;
+}
+
 /* 486px - the total height of the container everywhere */
