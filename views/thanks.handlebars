@@ -1,17 +1,31 @@
-{{>logout notEdit=true}}
+
 <div class="container thanks-container">
-    {{#currRow}}
-        <h1>Thank you</h1>
-        <h2>for signing the petition</h2>
-        <div class="img-container">
-           <img src="{{sig}}"> 
+
+    <div class="outter-square">
+        {{#currRow}}
+        <div class="row">
+            <h1>Thank you</h1>
+            <div class="column-right">
+                <h2>for signing the petition</h2> 
+            {{#../allRows}}
+                <a class="see-signers" href="/signers">see all {{count}} signers</a>
+            {{/../allRows}}
+            </div>    
         </div>
-    {{/currRow}}
-    {{#allRows}}
-        <a href="/signers">See all {{count}} signers</a>
-    {{/allRows}}
-    <form class="delete-sig-form" method="post">
-        <input type="hidden" name="_csrf" value="{{csrfToken}}">
-        <button class="delete-sig-btn" type="submit">Delete signature</button>
-    </form>
+        <div class="sig-img-container">
+            <img src="{{sig}}"> 
+        </div>
+        <form class="delete-sig-form" method="post">
+            <button id="delete-sig-btn" type="submit">delete signature</button>
+            <input type="hidden" name="_csrf" value="{{../csrfToken}}">
+        </form> 
+        {{/currRow}}
+    </div>  
+
+    <div class="nav">
+        {{>logout notEdit=true}}
+    </div>
+</div>
+<div id="dragon-thanks" class="dragon-container">
+        <img id="dragon-img-thanks" class="dragon" src="/images/dragon-thanks.png" alt="somedragon">
 </div>

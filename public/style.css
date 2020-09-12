@@ -120,7 +120,9 @@ button:active {
 
 .login a,
 .login-container a, 
-.profile-container a {
+.profile-container a,
+.nav a,
+.see-signers {
     font-size: 24px;
     color: rgb(20, 83, 73);
     text-decoration: none;
@@ -129,14 +131,18 @@ button:active {
 
 .login a:hover,
 .login-container a:hover,
-.profile-container a:hover {
+.profile-container a:hover,
+.nav a:hover,
+.see-signers:hover {
     color: rgba(20, 83, 73, 0.7);
     text-decoration: underline;
 }
 
 .login a:active,
 .login-container a:active,
-.profile-container a:active {
+.profile-container a:active,
+.nav a:active,
+.see-signers:active {
     color: rgba(20, 83, 73, 0.7);
 }
 
@@ -220,4 +226,118 @@ button:active {
     justify-content: center;
 }
 
+/* PETITION PAGE ************** PETITION PAGE ************* PETITION PAGE */
+.signature-field {
+    width: 400px;
+    height: 486px;
+    border: 5px solid black;
+}
+
+.petition-container h1 {
+    font-size: 40px;
+}
+
+.petition-container .heighlight {
+    color: rgb(20, 83, 73);
+}
+
+.petition-container form {
+    display: block;
+}
+
+#canv {
+    background-color: rgba(95, 158, 160, 0.8);
+}
+
+.petition-container button {
+    align-self: start;
+}
+
+
+.nav {
+    display: flex;
+    flex-direction: column;
+    font-size: 22px;
+    font-weight: bold;
+    width: 200px;
+    height: 60px;
+    padding-right: 5px;
+    text-align: right;
+    border-right: 4px solid black;
+    border-top: 4px solid black;
+}
+
+#dragon-signature {
+    top: 27%;
+    right: 32%;
+}
+
+#dragon-img-petition {
+    width: 750px;
+    opacity: 0.7;
+}
+
+
+/*  THANKS **************** THANKS *************** THANKS *************** THANKS */
+.thanks-container .outter-square {
+    width: 486px;
+    height: 486px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.thanks-container .row {
+    display: flex;
+    border: 5px solid black;
+}
+
+.thanks-container h1 {
+    width: 50%;
+    height: 243px;
+    border-right: 5px solid black;
+    font-size: 40px;
+    vertical-align: bottom;
+}
+
+.thanks-container .column-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+}
+
+.thanks-container .see-signers {
+    font-weight: bold;
+}
+
+.sig-img-container {
+   border-bottom: 1px solid black;
+   text-align: center;
+   margin-top: 40px;
+}
+
+
+#delete-sig-btn {
+    width: 486px;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    font-size: 24px;
+    color: rgb(20, 83, 73);
+    letter-spacing: normal;
+}
+
+.thanks-container .delete-sig-form {
+    display: block;
+}
+
+#dragon-thanks {
+    top: 25%;
+    right: 40%;
+}
+
+#dragon-img-thanks {
+    width: 900px;
+}
 /* 486px - the total height of the container everywhere */

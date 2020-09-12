@@ -1,4 +1,4 @@
-{{>logout}}
+
 <div class="container edit-container">
     <h1>here you can edit your profile</h1>
     <p class="warning" style="visibility: {{addVisibility}}">Something went wrong. Please make sure you filled out all the required fields.</p>
@@ -16,5 +16,8 @@
         <input type="hidden" name="_csrf" value="{{csrfToken}}">
         <button type="submit">update</button>
     </form>
+    <div class="nav">
+        {{>logout}}
+    </div>
     <a href="/profile/delete">delete profile</a>
 </div>

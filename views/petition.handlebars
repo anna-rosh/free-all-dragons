@@ -1,16 +1,20 @@
-{{>logout notEdit=true}}
 <div class="container petition-container">
-    <h1>welcome to the petition page</h1>
-    <h2>Sign the petition to make something very important happen</h2>
-    <p class="instructions">Please fill in your first and last names as well as 
-        your signature in the provided fields below</p>
-    <form method="post">
-        <p class="warning" style="visibility: {{addVisibility}}">Something went wrong. Please, try again</p>
-        <canvas id="canv" width="400" height="150"></canvas>
-        <input id="sig" type="hidden" name="signature">
-        <p>your signature</p>
-        {{!-- get csrfToken --}}
-        <input type="hidden" name="_csrf" value="{{csrfToken}}">
-        <button type="submit">submit</button>
-    </form> 
+    <div class="signature-field">
+        <h1>place your signature in the field below to help us to</h1>
+        <h1 class="heighlight">free all dragons</h1>
+            <form method="post">
+                <p class="warning" style="visibility: {{addVisibility}}">Something went wrong. Please, try again</p>
+                <canvas id="canv" width="350" height="150"></canvas>
+                <input id="sig" type="hidden" name="signature">
+                {{!-- get csrfToken --}}
+                <input type="hidden" name="_csrf" value="{{csrfToken}}">
+                <button type="submit">submit</button>
+            </form> 
+    </div> 
+    <div class="nav">
+        {{>logout notEdit=true}}
+    </div>
+</div>
+<div class="dragon-container" id="dragon-signature">
+        <img id="dragon-img-petition" src="/images/dragon-signature.png" alt="somedragon">
 </div>

@@ -1,7 +1,6 @@
-{{>logout notEdit=true}}
 <div class="container signers-container">
     <div class="signers">
-        <h1>Meet other proud signers!</h1>
+        <h1>meet other proud signers!</h1>
         {{#signers}}
             {{#if url}}
                 <h3><a href="{{url}}" target="_blank">{{first}} {{last}}</a>{{#if age}}, {{age}}{{/if}}
@@ -13,5 +12,8 @@
                 </h3>
             {{/if}}
         {{/signers}}   
-    </div>      
+    </div>
+    <div class="nav">
+        {{>logout notEdit=true}}
+    </div>    
 </div>
