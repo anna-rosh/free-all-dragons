@@ -1,11 +1,14 @@
-{{>logout}}
 <div class="container profile-container">
-    <h1>here is the profile page</h1>
+    <div class="title">
+       <h1>free all dragons</h1>
+        <h2>tell about yourself (optional)</h2> 
+    </div>
     <form method="post">
         <input class="age" type="text" name="age" placeholder="age">
         <input class="city" type="text" name="city" placeholder="city">
         <input class="url" type="text" name="url" placeholder="https://your-homepage.com" pattern="https?://.*" title="https:// or http://">
         <input type="hidden" name="_csrf" value="{{csrfToken}}">
-        <button type="submit">sign the petition</button>
+        <button type="submit">to the petition</button>
     </form>
+    {{>logout}}
 </div>

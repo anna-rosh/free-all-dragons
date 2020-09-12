@@ -15,7 +15,7 @@ body {
 .container {
     position: relative;
     display: flex;
-    width: 65%;
+    width: 70%;
     justify-content: space-between;
 }
 
@@ -23,10 +23,10 @@ body {
     display: flex;
     flex-direction: column;
     width: 400px;
-    background-color: rgba(106, 110, 108, 0.8);
+    background-color: rgba(106, 110, 108, 0);
 }
 
-.title {
+.registration-container .title {
     display: flex;
 }
 
@@ -36,9 +36,10 @@ body {
     margin-right: 10px;
 }
 
-.title h2 {
+.registration-container .title h2 {
     font-size: 29px;
     color: rgb(20, 83, 73);
+    letter-spacing: 0.5px;
 }
 
 .warning {
@@ -70,11 +71,11 @@ input {
 
 input:focus {
     outline: none;
-    border-color: rgb(20, 83, 73) ;
+    border-color: rgba(20, 83, 73, 0.7) ;
 }
 
 input:hover {
-    border-color: rgb(20, 83, 73);
+    border-color: rgba(20, 83, 73, 0.7);
 }
 
 .required {
@@ -117,19 +118,25 @@ button:active {
     font-size: 22px;
 }
 
-.login a {
+.login a,
+.login-container a, 
+.profile-container a {
     font-size: 24px;
     color: rgb(20, 83, 73);
     text-decoration: none;
     transition: color 0.3s;
 }
 
-.login a:hover {
+.login a:hover,
+.login-container a:hover,
+.profile-container a:hover {
     color: rgba(20, 83, 73, 0.7);
     text-decoration: underline;
 }
 
-.login a:active {
+.login a:active,
+.login-container a:active,
+.profile-container a:active {
     color: rgba(20, 83, 73, 0.7);
 }
 
@@ -142,7 +149,75 @@ button:active {
     z-index: -1;
 }
 
-.register-dragon {
+.dragon {
     opacity: 0.7;
     object-fit: contain;
 }
+
+
+/*  LOGIN ********* LOGIN ********** LOGIN ********** LOGIN ********** LOGIN ********** LOGIN  */
+
+.login-container h1{
+    writing-mode: tb-rl;
+    transform: rotate(-180deg);
+    font-size: 45px;
+    border: 5px solid black;
+    padding-bottom: 123px;
+}
+
+.login-container a {
+    height: 60px;
+    padding-right: 5px;
+    text-align: right;
+    border-right: 4px solid black;
+    border-top: 4px solid black;
+    width: 200px;
+}
+
+.login-container h2 {
+    font-size: 22px;
+}
+
+.login-container form {
+    margin-right: 180px;
+    justify-content: center;
+}
+
+
+/*  PROFILE ******************** PROFILE ******************** PROFILE ******************** PROFILE ******************** PROFILE */
+.profile-container .title {
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-container .title h1 {
+    width: 187.52px;
+}
+
+.profile-container .title h2 {
+    writing-mode: tb-rl;
+    transform: rotate(-180deg);
+    font-size: 35px;
+    height: 372px;
+    line-height: 50px;
+}
+
+
+.profile-container .logout {
+    display: block;
+    font-size: 22px;
+    font-weight: bold;
+    width: 200px;
+    height: 60px;
+    padding-right: 5px;
+    text-align: right;
+    border-right: 4px solid black;
+    border-top: 4px solid black;
+}
+
+
+.profile-container form {
+    justify-content: center;
+}
+
+/* 486px - the total height of the container everywhere */
