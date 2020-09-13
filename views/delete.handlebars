@@ -1,7 +1,19 @@
-<h1>you are trying to delete your account</h1>
-<h2>are you sure you want to do this?</h2>
-<a href="/profile/edit">Never!</a>
-<form method="post">
-    <input type="hidden" name="_csrf" value="{{csrfToken}}">
-    <button type="submit">Yes</button>
-</form>
+<div class="container delete-container">
+    <main>
+        <h1>you are trying to delete your profile</h1>
+        <h2>are you sure you want to do this?</h2>
+
+        <div class="delete-buttons">
+            <a class="delete-btn" href="/profile/edit">Never!</a>
+            <form method="post">
+                <input type="hidden" name="_csrf" value="{{csrfToken}}">
+                <button class="delete-btn" type="submit">Yes</button>
+            </form>
+        </div>
+
+    </main>  
+</div>
+
+<div class="dragon-container" id="dragon-delete">
+        <img id="dragon-img-delete" class="dragon" src="/images/dragon-delete-profile.png" alt="somedragon">
+</div>

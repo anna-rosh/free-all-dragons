@@ -439,7 +439,8 @@ button:active,
 
 
 /* EDIT PROFILE ****************** EDIT PROFILE ******************* EDIT PROFILE ***************** EDIT PROFILE */
-.edit-container h1 {
+.edit-container h1,
+.edit-error-container h1 {
     font-size: 45px;
     border: 5px solid black;
     max-width: 200px;
@@ -452,7 +453,7 @@ button:active,
 }
 
 .edit-container .buttons-edit {
-    margin-top: 35px;
+    margin-top: 7px;
     height: 80px;
     border: 5px solid black;
     display: grid;
@@ -463,6 +464,7 @@ button:active,
     border-right: 2.5px solid black;
     margin: 0;
     padding: 0;
+    transition: color 0.3s;
 }
 
 #delete-profile {
@@ -475,18 +477,103 @@ button:active,
     letter-spacing: 2px;
     font-weight: bold;
     text-align: center;
+    transition: color 0.3s;
 }
 
-#dragon-edit {
+#dragon-edit,
+#dragon-edit-error {
     right: 56%;
     top: 20%;
 }
 
-#dragon-img-edit {
+#dragon-img-edit,
+#dragon-img-edit-error {
     width: 700px;
 }
 
-.edit-container .error-message {
-    width: 250px;
+.edit-error-container .error-message {
+    margin-left: 300px;
+    align-self: center;
+    width: 400px;
+    font-size: 22px;
+    font-weight: bold;
+    line-height: 30px;
 }
+
+.edit-error-container .error-message a {
+    margin-top: 10px;
+    text-decoration: none;
+    color: rgb(18, 100, 87);
+    transition: color 0.3s;
+}
+
+.edit-error-container .error-message a:hover {
+    color: rgba(209, 209, 209, 0.6);
+}
+
+/* DELETE PROFILE ***************** DELETE PROFILE ***************** DELETE PROFILE **************** DELETE PROFILE */
+.delete-container {
+    height: 486px;
+    justify-content: flex-end;
+}
+
+.delete-container main {
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.delete-container main h1 {
+    font-size: 40px;
+    margin-bottom: 70px;
+}
+
+.delete-container main h2 {
+    font-size: 27px;
+    margin-bottom: 70px;
+}
+
+.delete-container .delete-buttons {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    border-top: 2px solid black;
+    padding-top: 60px;
+    width: 350px;
+    display: flex;
+}
+
+.delete-container .delete-btn {
+    display: block;
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 35px;
+    color: black;
+    letter-spacing: 2px;
+    transition: color 0.4s;
+}
+
+.delete-container .delete-btn:hover {
+    color: rgb(18, 100, 87);
+}
+
+.delete-container .delete-btn:active {
+    color:rgba(18, 100, 87, 0.7);
+}
+
+.delete-container .delete-buttons button {
+    text-align: right;
+}
+
+#dragon-delete {
+    top: 18%;
+    left: 10%;
+}
+
+#dragon-img-delete {
+    width: 700px;
+}
+
 /* 486px - the total height of the container everywhere */
