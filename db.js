@@ -25,7 +25,8 @@ module.exports.countRows = () => {
 // returns only one row in .rows
 module.exports.getCurrRow = (id) => {
     return db.query(
-        `SELECT * FROM signatures WHERE id = $1`,
+        `SELECT * FROM signatures
+        WHERE id = $1`,
         [id]
     );
 };

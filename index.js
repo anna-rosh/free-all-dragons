@@ -252,12 +252,13 @@ app.get('/thanks', requireLoggedInUser, requireSignature, (req, res) => {
         .then(({ rows:allRows }) => {
 
             db.getCurrRow(currSigId).then(({ rows:currRow }) => {
+                
                 res.render('thanks', {
                     layout: 'main',
                     currRow,
                     allRows
                 });
-            }).catch(err => console.log('error in getSigUrl: ', err)); // catch for getSigUrl
+            }).catch(err => console.log('error in getCurrRow: ', err)); // catch for getSigUrl
 
         })
         .catch((err) => {
