@@ -6,6 +6,7 @@
                 <p class="warning" style="visibility: {{addVisibility}}">Something went wrong. Please, try again</p>
                 <canvas id="canv" width="350" height="150"></canvas>
                 <input id="sig" type="hidden" name="signature">
+                <p id="clear">clear</p>
                 {{!-- get csrfToken --}}
                 <input type="hidden" name="_csrf" value="{{csrfToken}}">
                 <button type="submit">submit</button>

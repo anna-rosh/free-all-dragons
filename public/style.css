@@ -248,8 +248,21 @@ button:active,
     display: block;
 }
 
+
 #canv {
     background-color: rgba(95, 158, 160, 0.8);
+}
+
+#clear {
+    color: rgb(129, 126, 126);
+    text-align: right;
+    letter-spacing: 0.5px;
+    transition: color 0.3s;
+}
+
+#clear:hover {
+    cursor: pointer;
+    color: rgb(95, 158, 160);
 }
 
 .petition-container button {

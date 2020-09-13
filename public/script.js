@@ -9,7 +9,7 @@
     
     let x, y;
 
-    //////// EVENTS //////
+    //////// CANVAS DROWING EVENTS //////
     canv.on('mousedown', function fn(e) {
 
         findPosition(e);
@@ -52,5 +52,13 @@
         ctx.beginPath();
         ctx.moveTo(x, y);
     }
+
+
+    ///////// CLEAR CANVAS /////////
+    $('#clear').on('click', () => {
+        // set the signature url to an empty string to make the user sign
+        hiddenSig.val('');
+        ctx.clearRect(0, 0, 350, 150);
+    });
 
 })();

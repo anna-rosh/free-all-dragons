@@ -69,6 +69,14 @@ const requireSignature = (req, res, next) => {
     }
 };
 
+const requireNewUser = (req, res, next) => {
+    if(!req.session.newUser) {
+        res.redirect('/profile/edit');
+    } else {
+        next();
+    }
+};
+
 
 ////////////////////////// ROOT ROUTE REQUESTS ///////////////////////
 app.get('/', (req, res) => {
@@ -98,6 +106,8 @@ app.post('/register', requireLoggedOutUser, (req, res) => {
                     const { id } = rows[0];
                     // store user's id in a cookie to define her as registered/logged in
                     req.session.userId = id;
+                    // store the information in the cookie to indicate a newly registered user (to allow the access to /profile)
+                    req.session.newUser = true;
 
                     res.redirect('/profile');
                     
@@ -307,22 +317,23 @@ app.get('/signers/:city', requireLoggedInUser, requireSignature, (req, res) => {
 });
 
 /////////////////// PROFILE REQUEST ////////////////
-app.get('/profile', requireLoggedInUser, (req, res) => {
-        res.render('profile', {
-            layout: 'main',
-        });
+app.get('/profile', requireLoggedInUser, requireNewUser, (req, res) => {
+    // delete the cookie not to allow an 'old user' to get back to the /profile page
+    req.session.newUser = null;
+
+    res.render("profile", {
+        layout: "main",
+    });
 });
 
 app.post('/profile', requireLoggedInUser, (req, res) => {
-
-    let { age, city, url } =  req.body;
+    let { age, city, url } = req.body;
 
     const { userId } = req.session;
-        
+
     db.addProfileInfo(age, city, url, userId)
         .then(() => res.redirect("/petition"))
         .catch((err) => console.log("err in addProfileInfo: ", err));
-
 });
 
 
