@@ -1,22 +1,18 @@
 <div class="container signers-container">
     <div class="text-container-signers">
         <h1>meet other proud signers!</h1>
-        <div class="under-header">
-            <h1 class="logo">free all dragons</h1>
-            <div class="list">
-            {{#signers}}
-                {{#if url}}
-                    <h3><a href="{{url}}" target="_blank">{{first}} {{last}}</a>{{#if age}}, {{age}}{{/if}}
-                    {{#if city}}, <a href="/signers/{{city}}">{{city}}</a>{{/if}}
-                    </h3>
-                {{else}}
-                    <h3>{{first}} {{last}}{{#if age}}, {{age}}{{/if}}
-                    {{#if city}}, <a href="/signers/{{city}}">{{city}}</a>{{/if}}
-                    </h3>
-                {{/if}}
-            {{/signers}}   
-            </div>
+        <div class="list">
+        {{#signers}}
+            {{#if url}}
+                <h3><a href="{{url}}" target="_blank">{{first}} {{last}}</a>{{#if age}}__{{age}}{{/if}}{{#if city}}<a href="/signers/{{city}}">__{{city}}</a>{{/if}}
+                </h3>
+            {{else}}
+                <h3>{{first}} {{last}}{{#if age}}__{{age}}{{/if}}{{#if city}}<a href="/signers/{{city}}">__{{city}}</a>{{/if}}
+                </h3>
+            {{/if}}
+        {{/signers}}   
         </div>
+        <p>scroll down to see everyone</p>
          
     </div>
     <div class="nav">

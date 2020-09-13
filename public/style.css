@@ -94,7 +94,8 @@ button {
     transition: color 0.3s;
 }
 
-button:hover {
+button:hover,
+#delete-profile:hover {
     cursor: pointer;
     color: rgb(20, 83, 73);
 }
@@ -103,7 +104,8 @@ button:focus {
     outline: none;
 }
 
-button:active {
+button:active,
+#delete-profile:active {
     outline: none;
     color: rgba(20, 83, 73, 0.7);
 }
@@ -133,8 +135,7 @@ button:active {
 .login-container a:hover,
 .profile-container a:hover,
 .nav a:hover,
-.see-signers:hover,
-.signers-container .list a:hover {
+.see-signers:hover {
     color: rgba(20, 83, 73, 0.7);
     text-decoration: underline;
 }
@@ -143,8 +144,7 @@ button:active {
 .login-container a:active,
 .profile-container a:active,
 .nav a:active,
-.see-signers:active,
-.signers-container .list a:active {
+.see-signers:active {
     color: rgba(20, 83, 73, 0.7);
 }
 
@@ -293,6 +293,7 @@ button:active {
 .thanks-container .row {
     display: flex;
     border: 5px solid black;
+    background-color: rgba(216, 218, 229, 0.3);
 }
 
 .thanks-container h1 {
@@ -352,30 +353,28 @@ button:active {
 
 .signers-container h1 {
     margin-bottom: 5px;
-    font-size: 35px;
+    font-size: 36px;
+    border-top: 5px solid black;
+    border-bottom: 5px solid black;
 }
 
-.signers-container .under-header {
-    display: flex;
-}
 
-.signers-container .under-header h1 {
-    writing-mode: tb-rl;
-    transform: rotate(-180deg);
-    font-size: 45px;
-    border: 5px solid black;
-    padding-bottom: 81px;
-    margin-right: 10px;
+.signers-container .list,
+.city-container .list {
+    /* background-color: rgba(106, 110, 108, 0.1); */
+    direction: rtl;
+    line-height: 43px;
+    text-align: left;
+    padding-left: 10px;
+    overflow: scroll;
 }
 
 .signers-container .list {
-    width: 440px;
-    height: 431px;
-    overflow: scroll;
-    line-height: 43px;
+    height: 400px;
 }
 
-.signers-container h3 {
+.signers-container h3,
+.city-container h3 {
     font-size: 22px;
     font-weight: 500;
     letter-spacing: 0.5px;
@@ -383,8 +382,19 @@ button:active {
 
 .signers-container .list a {
     text-decoration: none;
-    color: rgb(20, 83, 73);
-    font-weight: 600;
+    color: rgb(18, 100, 87);
+    transition: color 0.3s; 
+}
+
+.signers-container .list a:hover {
+    color: rgba(18, 100, 87, 0.6);
+} 
+
+.signers-container p {
+    margin-top: 10px;
+    color: darkgrey;
+    border-top: 2px solid black;
+    text-align: right;
 }
 
 #dragon-signers {
@@ -392,4 +402,91 @@ button:active {
     right: 27%;
 }
 
+
+/* CITY PAGE ****************** CITY PAGE ******************** CITY PAGE *********************** CITY PAGE */
+.city-container .title-city {
+    max-width: 300px;
+}
+
+.city-container h1 {
+    line-height: 45px;
+}
+
+.city-container .city {
+    border: 5px solid black;
+    font-size: 40px;
+    line-height: 40px;
+}
+
+.city-container .list {
+    height: 468px;
+    width: 400px;
+}
+
+.city-container .list h3 {
+    border-bottom: 2px solid black;
+    background-color: rgba(216, 218, 229, 0.3);
+}
+
+#dragon-city {
+    top: 28%;
+    right: 52%;
+}
+
+#dragon-img-city {
+    width: 750px;
+}
+
+
+/* EDIT PROFILE ****************** EDIT PROFILE ******************* EDIT PROFILE ***************** EDIT PROFILE */
+.edit-container h1 {
+    font-size: 45px;
+    border: 5px solid black;
+    max-width: 200px;
+    height: 486px;
+}
+
+.edit-container form {
+    width: 330px;
+    margin-left: 240px;
+}
+
+.edit-container .buttons-edit {
+    margin-top: 35px;
+    height: 80px;
+    border: 5px solid black;
+    display: grid;
+    grid-template-columns: 50% 50%;
+}
+
+.edit-container .buttons-edit button {
+    border-right: 2.5px solid black;
+    margin: 0;
+    padding: 0;
+}
+
+#delete-profile {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: black;
+    border-left: 2.5px solid black;
+    font-size: 26px;
+    letter-spacing: 2px;
+    font-weight: bold;
+    text-align: center;
+}
+
+#dragon-edit {
+    right: 56%;
+    top: 20%;
+}
+
+#dragon-img-edit {
+    width: 700px;
+}
+
+.edit-container .error-message {
+    width: 250px;
+}
 /* 486px - the total height of the container everywhere */

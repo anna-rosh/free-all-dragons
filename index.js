@@ -377,13 +377,8 @@ app.post('/profile/edit', requireLoggedInUser, (req, res) => {
             .catch(err => {
                 console.log('err in updateUsersTable: ', err);
 
-                res.render("edit", {
-                    layout: "main",
-                    helpers: {
-                        addVisibility() {
-                            return "visible";
-                        },
-                    },
+                res.render("edit-error", {
+                    layout: "main"
                 });
 
             }); // closes catch on updateUsersTable
@@ -405,13 +400,8 @@ app.post('/profile/edit', requireLoggedInUser, (req, res) => {
                     .catch(err => {
                         console.log("err in updateUsersTableWithPassword: ", err);
 
-                        res.render("edit", {
-                            layout: "main",
-                            helpers: {
-                                addVisibility() {
-                                    return "visible";
-                                },
-                            },
+                        res.render("edit-error", {
+                            layout: "main"
                         });
                     });
             })

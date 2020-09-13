@@ -1,7 +1,23 @@
-{{>logout notEdit=true}}
 <div class="container city-container">
-    <h1>here is the page with the users from {{params.city}}</h1>
-    {{#rowsWithCity}}
+
+    <div class="title-city">
+       <h1>signers from</h1>
+        <h1 class="city">{{params.city}}</h1> 
+    </div>
+    
+    <div class="list">
+       {{#rowsWithCity}}
         <h3>{{first}} {{last}}</h3>
-    {{/rowsWithCity}}
+        {{/rowsWithCity}} 
+    </div>
+    
+    <div class="nav">
+       {{>logout notEdit=true}}
+       <a href="/signers">back</a> 
+    </div>
+
+</div>
+
+<div class="dragon-container" id="dragon-city">
+        <img id="dragon-img-city" class="dragon" src="/images/dragon-city.png" alt="somedragon">
 </div>

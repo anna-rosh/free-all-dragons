@@ -1,23 +1,30 @@
 
 <div class="container edit-container">
-    <h1>here you can edit your profile</h1>
-    <p class="warning" style="visibility: {{addVisibility}}">Something went wrong. Please make sure you filled out all the required fields.</p>
-    <a href="/profile/edit"><p class="warning" style="visibility: {{addVisibility}}">Click here to try to edit again</p></a>
+    <h1>edit your profile</h1>
      <form method="post">
          {{#userInfo}}
-        <input class="name first" type="text" name="first" placeholder="first name" value="{{first}}">
-        <input class="name last" type="text" name="last" placeholder="last name" value="{{last}}">
-        <input class="email" type="text" name="email" placeholder="email address" value="{{email}}">
+        <input class="name first" type="text" name="first" placeholder="first name*" value="{{first}}">
+        <input class="name last" type="text" name="last" placeholder="last name*" value="{{last}}">
+        <input class="email" type="text" name="email" placeholder="email address*" value="{{email}}">
         <input class="password" type="text" name="password" placeholder="password">
         <input class="age" type="text" name="age" placeholder="age" value="{{age}}">
         <input class="city" type="text" name="city" placeholder="city" value="{{city}}">
         <input class="url" type="text" name="url" placeholder="https://your-hompage.com" pattern="https?://.*" title="https:// or http://" value={{url}}>
         {{/userInfo}}
-        <input type="hidden" name="_csrf" value="{{csrfToken}}">
-        <button type="submit">update</button>
+        <div class="buttons-edit">
+            <input type="hidden" name="_csrf" value="{{csrfToken}}">
+            <button type="submit">update</button>
+            <a id="delete-profile" href="/profile/delete">delete profile</a>
+        </div>
+        
     </form>
     <div class="nav">
         {{>logout}}
+        <a href="/petition">my signature</a>
     </div>
-    <a href="/profile/delete">delete profile</a>
+    
+</div>
+
+<div class="dragon-container" id="dragon-edit">
+        <img id="dragon-img-edit" class="dragon" src="/images/dragon-edit.png" alt="somedragon">
 </div>
