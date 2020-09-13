@@ -31,6 +31,17 @@ module.exports.getCurrRow = (id) => {
     );
 };
 
+module.exports.getUserName = (sigId) => {
+    return db.query(
+        `SELECT users.first
+        FROM signatures
+        JOIN users
+        ON signatures.user_id = users.id
+        WHERE signatures.id = $1`,
+        [sigId]    
+    );
+};
+
 
 module.exports.checkIfSigned = (userId) => {
     return db.query(

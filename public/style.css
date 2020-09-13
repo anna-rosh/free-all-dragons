@@ -318,6 +318,10 @@ button:active,
     vertical-align: bottom;
 }
 
+.thanks-container h1 span {
+    font-size: 35px;
+}
+
 .thanks-container .column-right {
     display: flex;
     flex-direction: column;

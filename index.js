@@ -250,14 +250,23 @@ app.get('/thanks', requireLoggedInUser, requireSignature, (req, res) => {
 
     db.countRows()
         .then(({ rows:allRows }) => {
-
+            // get the row with the signature id to have an access to the image
             db.getCurrRow(currSigId).then(({ rows:currRow }) => {
+                // join table data to get the first name of the current user
+                db.getUserName(currSigId).then(({ rows }) => {
+
+                    const { first } = rows[0];
+
+                    res.render('thanks', {
+                        layout: 'main',
+                        currRow,
+                        allRows,
+                        first
+                    });
+
+                }).catch(err => console.log('error in getUserName: ', err));
                 
-                res.render('thanks', {
-                    layout: 'main',
-                    currRow,
-                    allRows
-                });
+                
             }).catch(err => console.log('error in getCurrRow: ', err)); // catch for getSigUrl
 
         })
