@@ -339,6 +339,14 @@ app.get('/profile', requireLoggedInUser, requireNewUser, (req, res) => {
 app.post('/profile', requireLoggedInUser, (req, res) => {
     let { age, city, url } = req.body;
 
+    if (
+        !url.startsWith("http://") &&
+        !url.startsWith("https://") &&
+        !url.length == 0
+    ) {
+        url = "";
+    }
+
     const { userId } = req.session;
 
     db.addProfileInfo(age, city, url, userId)
@@ -356,9 +364,6 @@ app.get('/logout', requireLoggedInUser, (req, res) => {
     res.redirect('/login');
 
 });
-
-
-
 
 
 //////////////////////////// EDIT-PROFILE REQUESTS ///////////////////////
@@ -379,7 +384,11 @@ app.get('/profile/edit', requireLoggedInUser, (req, res) => {
 
 app.post('/profile/edit', requireLoggedInUser, (req, res) => {
 
-    const { first, last, email, password, age, city, url } = req.body;
+    let { first, last, email, password, age, city, url } = req.body;
+
+    if ((!url.startsWith('http://')) && (!url.startsWith('https://')) && (!url.length == 0)) {
+        url = '';
+    }
 
     const { userId } = req.session;
 
