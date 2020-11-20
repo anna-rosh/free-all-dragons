@@ -1,4 +1,4 @@
-# free-all-dragons 🐉
+# FREE ALL DRAGONS 🐉
 An online petition - part of SPICED curriculum. User can register, create an account, sign the petition, delete their signature, view other signers, edit their account or delete it.<hr>
 ### The project is online 💻
 https://dragon-petition.herokuapp.com/register <hr>
